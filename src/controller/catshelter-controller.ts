@@ -16,8 +16,8 @@ export default class CatShelterController {
         let a = new AdderUpgrade(10);
         this.#catShelter.purchaseUpgrade(a);
 
-        console.log("Purchased Adder Upgrade for the shelter");
-        console.log(this.#catShelter);
+        // console.log("Purchased Adder Upgrade for the shelter");
+        // console.log(this.#catShelter);
 
     }
 }

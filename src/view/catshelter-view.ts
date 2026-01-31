@@ -21,7 +21,8 @@ export default class CatShelterView {
 
         this.#catShelter.upgrades.forEach(u => {
             let upgradeEl = document.createElement("li");
-            upgradeEl.innerHTML= /* html */`<strong>${"unspecified upgrade"}</strong>`;
+            upgradeEl.innerHTML= /* html */
+                `<strong>${"unspecified upgrade"}</strong>`;
             this.#upgradesEl.appendChild(upgradeEl);
         });
     }

@@ -8,6 +8,10 @@ export default class CatShelter {
     #upgrades: Array<Upgrade>;
     #listeners: Array<Listener>;
 
+    #checkCatShelter() {
+        assert(this.#cats >= 0, "Number of cats owned must be greater than or equal to zero");
+    }
+
     constructor() {
         this.#cats = 0;
         this.#upgrades = new Array<Upgrade>;
@@ -17,10 +21,6 @@ export default class CatShelter {
 
     get upgrades() {
         return this.#upgrades;
-    }
-
-    #checkCatShelter() {
-        assert(this.#cats >= 0, "Number of cats owned must be greater than or equal to zero");
     }
 
     purchaseUpgrade(myUpgrade: Upgrade) {
@@ -40,7 +40,7 @@ export default class CatShelter {
     }
 
     #notifyAll() {
-        this.#listeners.forEach((l) => l.notify())
+        this.#listeners.forEach((li) => li.notify())
     }
 
     registerListener(listener: Listener) {
