@@ -1,5 +1,4 @@
 import { assert } from "../assertions";
-import AdderUpgrade from "./adderupgrade";
 import type Upgrade from "./upgrade";
 import type Listener from "./listener";
 
@@ -37,6 +36,11 @@ export default class CatShelter {
         }
 
         this.#cats += base;
+        this.#notifyAll();
+    }
+
+    get cats() : number {
+        return this.#cats
     }
 
     #notifyAll() {

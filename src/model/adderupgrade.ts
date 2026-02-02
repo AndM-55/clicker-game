@@ -5,19 +5,24 @@ export default class AdderUpgrade {
 
   constructor(addend: number) {
     this.#addend = addend;
+    if (this.#addend < 1) {
+      throw new InvalidAddendException();
+    }
     this.#checkAdderUpgrade();
   }
 
   #checkAdderUpgrade() {
-    assert(this.#addend > 1, "Addend must be at least 1");
+    assert(this.#addend >= 1, "Addend must be at least 1");
   }
 
   //maybe dont need this? we will see
-  get addend(): number {
-    return this.#addend;
+  getDescription(): string {
+    return "+" + this.#addend;
   }
 
   applyEffect(base: number) : number {
     return base + this.#addend;
   }
 }
+
+export class InvalidAddendException extends Error {}
