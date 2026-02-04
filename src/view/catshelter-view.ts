@@ -1,10 +1,12 @@
 import type CatShelterController from "../controller/catshelter-controller";
+import AdderUpgrade from "../model/adderupgrade";
 import CatShelter from "../model/catshelter";
+import MultiplierUpgrade from "../model/multiplierupgrade";
 
 export default class CatShelterView {
     #catShelter: CatShelter;
     #upgradesEl: HTMLUListElement;
-    #catsElement: HTMLUnknownElement;
+    #catsElement: HTMLParagraphElement;
     #controller: CatShelterController;
 
     constructor(catShelter: CatShelter, controller: CatShelterController) {
@@ -17,7 +19,7 @@ export default class CatShelterView {
                 <button id="purchase-adder-upgrade">Purchase Adder Upgrade</button>
                 <button id="purchase-multiplier-upgrade">Purchase Multiplier Upgrade</button>
                 <button id="click-cat">Click To Adopt Cats!</button>
-                <p>${this.#catShelter.cats}</p>
+                <p>${this.#catShelter.cats + " cats"}</p>
                 <ul></ul>
             </div>`
         this.#upgradesEl = document.querySelector("#catShelter > ul")!
@@ -30,6 +32,7 @@ export default class CatShelterView {
         document.querySelector("#purchase-multiplier-upgrade")!
             .addEventListener("click", 
             () => this.#controller.showCreateMultiplierUpgradeView());
+
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
     }
@@ -37,21 +40,28 @@ export default class CatShelterView {
     
 
     notify() {
-        // when im notified, i need to update the state of my display
 
-        // empty the contnts of the list (remove all elements)
-        this.#upgradesEl.replaceChildren();
-        this.#catsElement.replaceChildren();
+        this.#upgradesEl.replaceChildren(); //discard all current list elements
+        this.#catsElement.replaceChildren(); //discard the current displayed number of cats
 
+        //this block of code refreshes the view for displaying the number of cats
         let numCatsEl = document.createElement("num")
         numCatsEl.innerHTML = /* html */
-            `<strong>${this.#catShelter.cats}</strong>`
+            `<strong>${this.#catShelter.cats + " cats"}</strong>`
         this.#catsElement.appendChild(numCatsEl);
 
+
+        // this block of code refreshes the view of all our upgrades
         this.#catShelter.upgrades.forEach(u => {
             let upgradeEl = document.createElement("li");
-            upgradeEl.innerHTML= /* html */
-                `<strong>${u.getDescription()}</strong>`;
+            if (u instanceof AdderUpgrade) {
+                upgradeEl.innerHTML= /* html */
+                `<strong>${"+" + u.addend}</strong>`;
+            } else if (u instanceof MultiplierUpgrade) {
+                upgradeEl.innerHTML= /* html */
+                `<strong>${"x" + u.multiplier}</strong>`;
+            }
+            
             this.#upgradesEl.appendChild(upgradeEl);
         });
     }

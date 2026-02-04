@@ -16,8 +16,8 @@ export default class MultiplierUpgrade {
         assert(this.#multiplier >= 2, "multiplier must be at lease two for a multiplier upgrade");
     }
 
-    getDescription() {
-        return "X" + this.#multiplier;
+    get multiplier() {
+        return this.#multiplier;
     }
 
     applyEffect(base: number){

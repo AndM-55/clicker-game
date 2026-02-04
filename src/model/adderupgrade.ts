@@ -16,8 +16,8 @@ export default class AdderUpgrade {
   }
 
   //maybe dont need this? we will see
-  getDescription(): string {
-    return "+" + this.#addend;
+  get addend() {
+    return this.#addend;
   }
 
   applyEffect(base: number) : number {

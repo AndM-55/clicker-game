@@ -24,6 +24,7 @@ classDiagram
     class Upgrade {
         <<INTERFACE>>
         +applyEffect(number currPower) number
+        
     }
 
     class MultiplierUpgrade {
