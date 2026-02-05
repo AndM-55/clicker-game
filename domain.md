@@ -33,7 +33,7 @@ classDiagram
     }
     note for MultiplierUpgrade "Invariant properties:
     <ul>
-        <li> multiplier >= 1
+        <li> multiplier > 1
     </ul>"
     MultiplierUpgrade --|> Upgrade
 
@@ -48,4 +48,6 @@ classDiagram
     AdderUpgrade --|> Upgrade
 ```
 ### updates:
-##### changed CatShelter to not have properties for click power, but instead the number of cats gained will be calculated in the clickCat method by looking at each upgrade every time it's clicked 
+##### Changed CatShelter to not have properties for click power, but instead the number of cats gained will be calculated in the clickCat method by looking at each upgrade every time it's clicked 
+
+##### Changed MultiplierUpgrade invariant to enforce that the multiplier must be strictly greater than 1

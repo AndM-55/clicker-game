@@ -1,7 +1,10 @@
 import { assert } from "../assertions";
 
-export default class MultiplierUpgrade {
+/**
+ * A multiplicative upgrade that multiplies the power of the users click
+ */
 
+export default class MultiplierUpgrade {
     #multiplier: number;
 
     constructor(multiplier: number) {
@@ -16,13 +19,15 @@ export default class MultiplierUpgrade {
         assert(this.#multiplier >= 2, "multiplier must be at lease two for a multiplier upgrade");
     }
 
+    applyEffect(base: number){
+        return base * this.#multiplier;
+    }
+
     get multiplier() {
         return this.#multiplier;
     }
 
-    applyEffect(base: number){
-        return base * this.#multiplier;
-    }
 }
 
+// custom exception for invalid multiplier property
 export class InvalidMultiplierExeption extends Error {}

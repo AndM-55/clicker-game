@@ -2,7 +2,10 @@ import type CatShelterController from "../controller/catshelter-controller";
 import AdderUpgrade from "../model/adderupgrade";
 import CatShelter from "../model/catshelter";
 import MultiplierUpgrade from "../model/multiplierupgrade";
-
+/**
+ * this class is responsible for displaying the entirety of the cat shelter to the user
+ * including state, and the possible inputs it will take.
+ */
 export default class CatShelterView {
     #catShelter: CatShelter;
     #upgradesEl: HTMLUListElement;
@@ -14,6 +17,11 @@ export default class CatShelterView {
         this.#catShelter.registerListener(this);
         this.#controller = controller;
 
+        /**
+         * add the visible state of the catshelter to the body of the webpage
+         * 
+         * It has 3 buttons, a constant display of the number of cats, and an unordered list of upgrades
+         */
         document.querySelector("#app")!.innerHTML = /* html */
             `<div id ='catShelter'>
                 <button id="purchase-adder-upgrade">Purchase Adder Upgrade</button>
@@ -25,20 +33,27 @@ export default class CatShelterView {
         this.#upgradesEl = document.querySelector("#catShelter > ul")!
         this.#catsElement = document.querySelector("#catShelter > p")!
 
+        /**
+         * assign some functionality to the cat shelter view buttons
+         */
         document.querySelector("#purchase-adder-upgrade")!
-            .addEventListener("click", 
-            () => this.#controller.showCreateAdderUpgradeView());
+            .addEventListener("click",
+                () => this.#controller.showCreateAdderUpgradeView());
 
         document.querySelector("#purchase-multiplier-upgrade")!
-            .addEventListener("click", 
-            () => this.#controller.showCreateMultiplierUpgradeView());
+            .addEventListener("click",
+                () => this.#controller.showCreateMultiplierUpgradeView());
 
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
     }
 
-    
 
+
+    /**
+     * this function updates the view of the entire catshelter 
+     * it is called by its corresponding domain model instance
+     */
     notify() {
 
         this.#upgradesEl.replaceChildren(); //discard all current list elements
@@ -51,17 +66,18 @@ export default class CatShelterView {
         this.#catsElement.appendChild(numCatsEl);
 
 
-        // this block of code refreshes the view of all our upgrades
-        this.#catShelter.upgrades.forEach(u => {
+        // this block of code refreshes the view of all our list of upgrades
+        // empty the entire list then repopulate it with the updated list of upgrades
+        this.#catShelter.upgrades.forEach(upgrade => {
             let upgradeEl = document.createElement("li");
-            if (u instanceof AdderUpgrade) {
-                upgradeEl.innerHTML= /* html */
-                `<strong>${"+" + u.addend}</strong>`;
-            } else if (u instanceof MultiplierUpgrade) {
-                upgradeEl.innerHTML= /* html */
-                `<strong>${"x" + u.multiplier}</strong>`;
+            if (upgrade instanceof AdderUpgrade) {
+                upgradeEl.innerHTML = /* html */
+                    `<strong>${"+" + upgrade.addend}</strong>`;
+            } else if (upgrade instanceof MultiplierUpgrade) {
+                upgradeEl.innerHTML = /* html */
+                    `<strong>${"x" + upgrade.multiplier}</strong>`;
             }
-            
+
             this.#upgradesEl.appendChild(upgradeEl);
         });
     }

@@ -1,5 +1,9 @@
 import { assert } from '../assertions.ts';
 
+/**
+ * An additive upgrade that adds to the power of the user's click
+ */
+
 export default class AdderUpgrade {
   #addend: number;
 
@@ -15,14 +19,14 @@ export default class AdderUpgrade {
     assert(this.#addend >= 1, "Addend must be at least 1");
   }
 
-  //maybe dont need this? we will see
-  get addend() {
-    return this.#addend;
-  }
-
   applyEffect(base: number) : number {
     return base + this.#addend;
   }
+
+  get addend() {
+    return this.#addend;
+  }
 }
 
+// custom exception for invalid addend property
 export class InvalidAddendException extends Error {}
