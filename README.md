@@ -9,8 +9,8 @@ CatClicker2452 is an idle clicker game inspired by cookie clicker, for COMP 2452
 * the user can 'purchase' upgrades to increase the number of cats gained per click
 
 The program uses an MVC software architecture. 
-* All domain model objects can be found in the 'model' folder
-* All controller ts files can be found in the 'csontroller' folder
+* All domain model ts files can be found in the 'model' folder
+* All controller ts files can be found in the 'controller' folder
 * All User Interface ts/html files can be found in the 'view' folder
 # Running
 This project is a Node.js project that uses Vite.

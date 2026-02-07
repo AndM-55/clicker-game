@@ -20,6 +20,7 @@ export default class AdderUpgrade {
   }
 
   applyEffect(base: number) : number {
+    this.#checkAdderUpgrade();
     return base + this.#addend;
   }
 

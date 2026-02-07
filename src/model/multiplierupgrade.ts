@@ -20,6 +20,7 @@ export default class MultiplierUpgrade {
     }
 
     applyEffect(base: number){
+        this.#checkMultiplierUpgrade();
         return base * this.#multiplier;
     }
 
