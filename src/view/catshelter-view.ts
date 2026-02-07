@@ -38,11 +38,11 @@ export default class CatShelterView {
          */
         document.querySelector("#purchase-adder-upgrade")!
             .addEventListener("click",
-                () => this.#controller.showCreateAdderUpgradeView());
+                () => this.#controller.purchaseAdderUpgrade());
 
         document.querySelector("#purchase-multiplier-upgrade")!
             .addEventListener("click",
-                () => this.#controller.showCreateMultiplierUpgradeView());
+                () => this.#controller.purchaseMultiplierUpgrade());
 
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
