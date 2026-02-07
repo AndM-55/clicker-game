@@ -2,8 +2,7 @@ import AdderUpgrade from "../model/adderupgrade.ts";
 import CatShelter from "../model/catshelter.ts";
 import MultiplierUpgrade from "../model/multiplierupgrade.ts";
 import CatShelterView from "../view/catshelter-view.ts";
-// import CreateAdderUpgradeView from "../view/create-adderupgrade-view.ts";
-// import CreateMultiplierUpgradeView from "../view/create-multiplierupgrade-view.ts";
+
 
 /**
  * this class is the controller for the cat shelter. 
@@ -13,8 +12,6 @@ import CatShelterView from "../view/catshelter-view.ts";
 export default class CatShelterController {
     #catShelter: CatShelter;
     #catShelterView: CatShelterView;
-    // #createAddUpgradeView?: CreateAdderUpgradeView;
-    // #createMultUpgradeView?: CreateMultiplierUpgradeView;
 
     constructor() {
         this.#catShelter = new CatShelter();
