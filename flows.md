@@ -70,3 +70,8 @@ flowchart
     process-choice-.successfully purchased building.->shelter-menu
   end
 ```
+
+### changes 
+after phase 1, i changed a few things from the phase 1 diagrams
+-  the shelter menu diagram so it expresses how a user will log out and purchase a building
+-  the purchase upgrade flow now expresses how there can be an error state when attempting to purchase 

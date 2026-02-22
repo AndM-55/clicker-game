@@ -1,7 +1,9 @@
+--To hold all the Accounts
 create table if not exists profile_select(
     id serial not null unique
 );
 
+-- Cat Shelter - Functions as Accounts
 create table if not exists cat_shelter(
     id serial not null unique,
     cats integer not null,
@@ -11,6 +13,7 @@ create table if not exists cat_shelter(
         on delete cascade
 );
 
+-- Upgrades for accounts/shelters
 create table if not exists upgrade(
     id serial not null unique,
     strength integer not null,
@@ -21,6 +24,7 @@ create table if not exists upgrade(
         on delete cascade
 );
 
+-- Buildings for accounts/shelters
 create table if not exists building(
     id serial not null unique,
     efficiency integer not null,
