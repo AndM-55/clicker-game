@@ -9,16 +9,15 @@ date: Winter 2026
 ```mermaid
 classDiagram
 
-    class ProfileSelect {
-        -Array~CatShelter~ profiles
-
-        +createNewShelter(CatShelter : newAccount) void
+    class Profile {
+        -~string Username
+        -CatShelter shelter
     }
-    ProfileSelect "1" o--* "*" CatShelter
+    Profile "1" o--* "1" CatShelter
 
     class CatShelter {
-        -ProfileSelect profileSelect
-        -~string shelterOwner 
+        -number Id
+        -Profile profile
         -number cats
         -Array~Upgrade~ clickUpgrades
         -Array~Building~ buildings
@@ -36,11 +35,12 @@ classDiagram
 
     class Building {
         <<INTERFACE>>
+        -number Id
+        -CatShelter shelter
         +harvestCats() 
     }
 
     class SecondhandCageTrap {
-        -CatShelter shelter
         -number catsPerSecond
         -string description
         -number price
@@ -54,7 +54,6 @@ classDiagram
     </ul>"
 
     class LuxuriousCageTrap {
-        -CatShelter shelter
         -number catsPerSecond
         -string description
         -number price
@@ -68,12 +67,13 @@ classDiagram
 
     class Upgrade {
         <<INTERFACE>>
+        -number Id
+        -CatShelter shelter
         +applyEffect(number currPower) number
         
     }
 
     class ClickMultUpgrade {
-        -CatShelter shelter
         -number multiplier
         -number price
         -string description
@@ -86,7 +86,6 @@ classDiagram
     ClickMultUpgrade --|> Upgrade
 
     class ClickAddUpgrade {
-        -CatShelter shelter
         -number addend
         -number price
         -string description
@@ -105,3 +104,9 @@ classDiagram
 - both implementations of "upgrade" have been given aggregate references to their shelters 
 - catShelters get an array of buildings and a method to purchase new buildings
 - All upgrades and buildings have meaningful descriptions as properties
+
+### pending changes
+- instead of having a domain model object that holds all user profiles, we should just have a domain model object that represents a single profile. let the database control which cat shelter belongs to each profile. with this change we dont need a "shelterOwner" property on the catshelter, instead, profile will have a name. The catShelter will keep a synthetic ID, and profile will have a natural key
+
+
+- building and upgrade will be given synthetic ID's in the interface specification. the back references will be put there as well

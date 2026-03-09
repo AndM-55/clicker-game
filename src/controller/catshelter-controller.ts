@@ -20,7 +20,7 @@ export default class CatShelterController {
 
     // methods that mutate domain model
     purchaseAdderUpgrade() : void {
-        let a = new AdderUpgrade(2);
+        let a = new AdderUpgrade(3);
         this.#catShelter.purchaseUpgrade(a);
 
     }
