@@ -29,7 +29,7 @@ classDiagram
 
     class Building {
         <<INTERFACE>>
-        -number Id
+        -~number Id
         -CatShelter shelter
         +harvestCats() 
     }
@@ -61,7 +61,7 @@ classDiagram
 
     class Upgrade {
         <<INTERFACE>>
-        -number Id
+        -~number Id
         -CatShelter shelter
         +applyEffect(number currPower) number
         
