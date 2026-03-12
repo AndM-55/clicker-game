@@ -1,16 +1,8 @@
---To hold all the Accounts
-create table if not exists profile_select(
-    id serial not null unique
-);
-
--- Cat Shelter - Functions as Accounts
+-- Cat Shelter - 
 create table if not exists cat_shelter(
-    id serial not null unique,
-    cats integer not null,
-    shelter_owner varchar(255) not null unique,
-    parent_profile integer not null,
-    foreign key (parent_profile) references profile_select(id)
-        on delete cascade
+    userName varchar(255) not null unique,
+    pass varchar(255) not null,
+    cats integer not null
 );
 
 -- Upgrades for accounts/shelters
@@ -20,7 +12,7 @@ create table if not exists upgrade(
     price integer not null,
     descriptor varchar(255) not null,
     shelter varchar(255) not null,
-    foreign key (shelter) references cat_shelter(shelter_owner)
+    foreign key (shelter) references cat_shelter(userName)
         on delete cascade
 );
 
@@ -31,6 +23,6 @@ create table if not exists building(
     price integer not null,
     descriptor varchar(255) not null,
     shelter varchar(255) not null,
-    foreign key (shelter) references cat_shelter(shelter_owner)
+    foreign key (shelter) references cat_shelter(userName)
         on delete cascade
 );

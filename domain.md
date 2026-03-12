@@ -9,15 +9,9 @@ date: Winter 2026
 ```mermaid
 classDiagram
 
-    class Profile {
-        -~string Username
-        -CatShelter shelter
-    }
-    Profile "1" o--* "1" CatShelter
-
     class CatShelter {
-        -number Id
-        -Profile profile
+        -~string accountName
+        -string password
         -number cats
         -Array~Upgrade~ clickUpgrades
         -Array~Building~ buildings
@@ -98,15 +92,10 @@ classDiagram
     ClickAddUpgrade --|> Upgrade
 ```
 ### updates:
-- another class, ProfileSelect, has been created to hold onto all profiles in the application. it is composed of CatShelters, which function as accounts
-- CatShelter has been given a property "shelterOwner" to help distinguish between users 
+- CatShelter has been given the properties: accountName and password so it can function as a profile
 - another interface, "building", has been added; implemented by 2 new classes, the cage traps
 - both implementations of "upgrade" have been given aggregate references to their shelters 
 - catShelters get an array of buildings and a method to purchase new buildings
-- All upgrades and buildings have meaningful descriptions as properties
+- All upgrades and buildings have meaningful descriptions as properties, as well as serial ID's to identify them as unique instances
 
-### pending changes
-- instead of having a domain model object that holds all user profiles, we should just have a domain model object that represents a single profile. let the database control which cat shelter belongs to each profile. with this change we dont need a "shelterOwner" property on the catshelter, instead, profile will have a name. The catShelter will keep a synthetic ID, and profile will have a natural key
-
-
-- building and upgrade will be given synthetic ID's in the interface specification. the back references will be put there as well
+##### NOTE: as per a conversation I had with Franklin, I decided to delete the profileSelect as its own class, and I made it so that catShelter has profile functionality as an alternative. We discussed that yes, it isnt very cohesive, but it makes the database easier to manage, and should I ever need to extract the concept of profile out of this class, it wouldnt be that difficult.
