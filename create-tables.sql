@@ -11,6 +11,7 @@ create table if not exists upgrade(
     strength integer not null,
     price integer not null,
     descriptor varchar(255) not null,
+    upgradeType varchar(255) not null,
     shelter varchar(255) not null,
     foreign key (shelter) references cat_shelter(userName)
         on delete cascade
@@ -22,6 +23,7 @@ create table if not exists building(
     efficiency integer not null,
     price integer not null,
     descriptor varchar(255) not null,
+    buildingType varchar(255) not null,
     shelter varchar(255) not null,
     foreign key (shelter) references cat_shelter(userName)
         on delete cascade
