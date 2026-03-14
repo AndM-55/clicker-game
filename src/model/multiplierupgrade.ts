@@ -1,14 +1,22 @@
 import { assert } from "../assertions";
+import type CatShelter from "./catshelter";
 
 /**
  * A multiplicative upgrade that multiplies the power of the users click
  */
 
 export default class MultiplierUpgrade {
+    id?: number
+    shelter: CatShelter;
+    descriptor: string;
     #multiplier: number;
+    price: number; 
 
-    constructor(multiplier: number) {
+    constructor(multiplier: number, price: number, shelter: CatShelter) {
+        this.shelter = shelter;
         this.#multiplier = multiplier;
+        this.price = price;
+        this.descriptor = "for now";
         if (this.#multiplier <= 1) {
             throw new InvalidMultiplierExeption();
         }
@@ -17,6 +25,7 @@ export default class MultiplierUpgrade {
 
     #checkMultiplierUpgrade() {
         assert(this.#multiplier >= 2, "multiplier must be at lease two for a multiplier upgrade");
+        assert(this.price > 0, "price must be greater than 0");
     }
 
     applyEffect(base: number){
@@ -24,7 +33,7 @@ export default class MultiplierUpgrade {
         return base * this.#multiplier;
     }
 
-    get multiplier() {
+    get power() {
         return this.#multiplier;
     }
 

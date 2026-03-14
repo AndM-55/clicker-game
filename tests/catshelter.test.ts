@@ -5,8 +5,8 @@ import AdderUpgrade from "../src/model/adderupgrade.ts";
 import CatShelter from "../src/model/catshelter.ts";
 
 test("Can add upgrade to shelter", () => {
-    let u = new AdderUpgrade(10);
-    let s = new CatShelter();
+    let s = new CatShelter("a", "b");
+    let u = new AdderUpgrade(10, 0, s);
 
     s.purchaseUpgrade(u);
 
@@ -14,8 +14,8 @@ test("Can add upgrade to shelter", () => {
 });
 
 test("Shelter notifies listeners", () => {
-    let u = new AdderUpgrade(10);
-    let s = new CatShelter();
+    let s = new CatShelter("a", "b");
+    let u = new AdderUpgrade(10, 0, s);
 
     let notified = false;
 
@@ -27,9 +27,9 @@ test("Shelter notifies listeners", () => {
 });
 
 test("Shelter adds cats properly", () => {
-    let u = new AdderUpgrade(10);
-    let u2 = new MultiplierUpgrade(2);
-    let s = new CatShelter();
+    let s = new CatShelter("a", "b");
+    let u = new AdderUpgrade(10, 0, s);
+    let u2 = new MultiplierUpgrade(2, 0, s);
 
     s.purchaseUpgrade(u);
     s.purchaseUpgrade(u2);

@@ -17,12 +17,15 @@ classDiagram
         -Array~Building~ buildings
 
         +clickCat() void
+        +checkTraps() void
         +purchaseUpgrade(Upgrade upgrade) void
         +purchaseBuilding(Building building) void
     }
     note for CatShelter "Invariant properties:
     <ul>
         <li>cats >= 0
+        <li>accountName.length > 0
+        <li>password.length > 0
     </ul>"
     CatShelter "1" o--* "*" Upgrade
     CatShelter "1" o--* "*" Building
@@ -31,13 +34,14 @@ classDiagram
         <<INTERFACE>>
         -~number Id
         -CatShelter shelter
+        -string description
+        -number price
+        -number catsPerSecond
         +harvestCats() 
     }
 
     class SecondhandCageTrap {
-        -number catsPerSecond
-        -string description
-        -number price
+        
         +harvestCats() 
 
     }
@@ -45,17 +49,16 @@ classDiagram
     note for SecondhandCageTrap "Invariant properties:
     <ul>
         <li> catsPerSecond >= 1
+        <li> price > 0
     </ul>"
 
     class LuxuriousCageTrap {
-        -number catsPerSecond
-        -string description
-        -number price
         +harvestCats() 
     }
     note for LuxuriousCageTrap "Invariant properties:
     <ul>
         <li> catsPerSecond >= 1
+        <li> price > 0
     </ul>"
     LuxuriousCageTrap --|> Building
 
@@ -63,31 +66,32 @@ classDiagram
         <<INTERFACE>>
         -~number Id
         -CatShelter shelter
+        -number price
+        -string description
         +applyEffect(number currPower) number
         
     }
 
     class ClickMultUpgrade {
         -number multiplier
-        -number price
-        -string description
+        
         +applyEffect(number currPower) number
     }
     note for ClickMultUpgrade "Invariant properties:
     <ul>
         <li> multiplier > 1
+        <li> price > 0
     </ul>"
     ClickMultUpgrade --|> Upgrade
 
     class ClickAddUpgrade {
         -number addend
-        -number price
-        -string description
         +applyEffect(number currPower) number
     }
     note for ClickAddUpgrade "Invariant properties:
     <ul>
         <li> addend >= 1
+        <li> price > 0
     </ul>"
     ClickAddUpgrade --|> Upgrade
 ```
