@@ -1,5 +1,7 @@
 import { assert } from "../assertions";
 import type CatShelter from "./catshelter";
+import db from "./connection";
+import type Upgrade from "./upgrade";
 
 /**
  * A multiplicative upgrade that multiplies the power of the users click
@@ -12,11 +14,11 @@ export default class MultiplierUpgrade {
     #multiplier: number;
     price: number; 
 
-    constructor(multiplier: number, price: number, shelter: CatShelter) {
+    constructor(multiplier: number, price: number, shelter: CatShelter, descriptor: string) {
         this.shelter = shelter;
         this.#multiplier = multiplier;
         this.price = price;
-        this.descriptor = "for now";
+        this.descriptor = descriptor;
         if (this.#multiplier <= 1) {
             throw new InvalidMultiplierExeption();
         }

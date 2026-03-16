@@ -28,3 +28,10 @@ create table if not exists building(
     foreign key (shelter) references cat_shelter(userName)
         on delete cascade
 );
+
+create table if not exists inventory(
+    mechanic varchar(255) not null,
+    price integer not null,
+    descriptor varchar(255),
+    strength integer not null
+);
