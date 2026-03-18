@@ -4,13 +4,20 @@ import type Building from "./building";
 import db from "./connection";
 import SecondhandTrap from "./secondhand-trap";
 
-
+/**
+ * Luxurious cat trap building that passively collects cats for an account
+ */
 export default class LuxuriousTrap {
     id?: number;
     shelter: CatShelter;
     descriptor: string;
     price: number;
     efficiency: number
+
+    #checkTrap() {
+        assert(this.efficiency > 1, "Cats per Second must be greater than 1 for buildings")
+        assert(this.price >= 1, "Price must be at least 1 for buildings");
+    }
 
     constructor(shelter: CatShelter, price: number, cps: number, descriptor: string) {
         this.efficiency = cps;
@@ -20,6 +27,12 @@ export default class LuxuriousTrap {
         this.#checkTrap();
     }
 
+    /**
+     * this function persists a building to the database
+     * 
+     * @param building the instance of {@link Building} to be persisted 
+     * @returns a promise of the building that was persisted
+     */
     static async saveBuilding(building: Building): Promise<Building> {
         let type 
         if (building instanceof LuxuriousTrap) {
@@ -37,6 +50,12 @@ export default class LuxuriousTrap {
         return building;
     }
 
+    /**
+     * this function retrieves all buildings from the database that belong to an instance of account/shelter
+     * 
+     * @param shelter the {@link CatShelter} we are retrieving the {@link Building} instances for
+     * @returns a promise of an array of buildings from the database
+     */
     static async getBuildingsForShelter(shelter: CatShelter): Promise<Array<Building>> {
         let results = await db().query<{
           id: number
@@ -56,7 +75,7 @@ export default class LuxuriousTrap {
           if (row.buildingtype === "luxurious") {
             b = new LuxuriousTrap(shelter, row.price, row.efficiency, row.descriptor);
           } else {
-            b = new SecondhandTrap(shelter, row.price, row.efficiency);
+            b = new SecondhandTrap(shelter, row.price, row.efficiency, row.descriptor);
           }
           b.id = row.id;
           allBuildings.push(b)
@@ -65,11 +84,11 @@ export default class LuxuriousTrap {
         return allBuildings;
     }
 
-    #checkTrap() {
-        assert(this.efficiency > 1, "Cats per Second must be greater than 1 for buildings")
-        assert(this.price >= 1, "Price must be at least 1 for buildings");
-    }
-
+    /**
+     * gets the number of cats to be added to the {@link CatShelter} instance
+     * 
+     * @returns the efficiency of the building, i.e., the number of cats that it will add in one second
+     */
     harvestCats() : number {
         return this.efficiency;
     }

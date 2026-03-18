@@ -1,6 +1,9 @@
 import type CatShelterController from "../controller/catshelter-controller";
 import { IncorrectUsernameOrPasswordException, InvalidAccountNameException, InvalidPasswordException, UsernameTakenEcxeption } from "../model/catshelter";
 
+/**
+ * this is the view class for the login/create account view.
+ */
 export default class CreateOrLoginView {
     #controller: CatShelterController;
     #dialog: HTMLDialogElement;
@@ -19,8 +22,10 @@ export default class CreateOrLoginView {
             <button id="create-shelter">Create New Shelter</button>
             <button id="login">Login</button>
         `
+        // one button attempts to create a new shelter with the values from label
         this.#dialog.querySelector("#create-shelter")!
             .addEventListener("click", () => this.#addShelter());
+        // the other button attempts to login to an account with the values from label
         this.#dialog.querySelector("#login")!
             .addEventListener("click", () => this.#login());
 
@@ -28,12 +33,23 @@ export default class CreateOrLoginView {
         this.#dialog.show();
     }
 
+    /**
+     * this function has the logic of attempting a login
+     */
     async #login() {
         let name = this.#dialog.querySelector<HTMLInputElement>("#acc-name")!.value;
         let pass = this.#dialog.querySelector<HTMLInputElement>("#pass")!.value;
+
+        // reset the colour of the input boxes to avoid confusion.
+        this.#dialog.querySelector("input[id='acc-name']")!
+            .setAttribute('style', 'border-color:default;');
+        this.#dialog.querySelector("input[id='pass']")!
+            .setAttribute('style', 'border-color:default;');
+
         try {
             await this.#controller.login(name, pass);
 
+            // we will start the autoclick and remove the dialog if login successful
             this.#controller.startAutoClick();
             document.body.removeChild(this.#dialog);
         } catch (e: any) {
@@ -50,13 +66,19 @@ export default class CreateOrLoginView {
         }
     }
 
+    /**
+     * this function has the logic for attempting to create a new account
+     */
     async #addShelter() {
         let name = this.#dialog.querySelector<HTMLInputElement>("#acc-name")!.value;
         let pass = this.#dialog.querySelector<HTMLInputElement>("#pass")!.value;
+
+        // reset the colour of the input boxes to avoid confusion.
         this.#dialog.querySelector("input[id='acc-name']")!
             .setAttribute('style', 'border-color:default;');
         this.#dialog.querySelector("input[id='pass']")!
             .setAttribute('style', 'border-color:default;');
+
         try {
             await this.#controller.addShelter(name, pass);
 

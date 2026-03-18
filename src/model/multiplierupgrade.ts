@@ -1,12 +1,9 @@
 import { assert } from "../assertions";
 import type CatShelter from "./catshelter";
-import db from "./connection";
-import type Upgrade from "./upgrade";
 
 /**
  * A multiplicative upgrade that multiplies the power of the users click
  */
-
 export default class MultiplierUpgrade {
     id?: number
     shelter: CatShelter;
@@ -30,6 +27,12 @@ export default class MultiplierUpgrade {
         assert(this.price > 0, "price must be greater than 0");
     }
 
+    /**
+     * multiplies the current click by its multiplier variable
+     * 
+     * @param base the current click power that will end up being added to the {@link CatShelter}
+     * @returns a number that was modified by the multiplier of this upgrade
+     */
     applyEffect(base: number){
         this.#checkMultiplierUpgrade();
         return base * this.#multiplier;

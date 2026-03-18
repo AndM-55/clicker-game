@@ -41,9 +41,7 @@ export default class CatShelterView {
         this.#catsElement = document.querySelector("#catShelter > p")!
         this.#buildingsEl = document.querySelector("#catShelter > ul")!
 
-        /**
-         * assign some functionality to the cat shelter view buttons
-         */
+        // display adder upgrade details upon mouseenter
         document.querySelector("#purchase-adder-upgrade")!
             .addEventListener("click",
                 () => this.#controller.purchaseAdderUpgrade());
@@ -54,8 +52,9 @@ export default class CatShelterView {
 
         document.querySelector("#purchase-adder-upgrade")!
             .addEventListener("mouseleave", 
-                () => this.#controller.removeUpgradeDesc());
+                () => this.#controller.removeItemDesc());
         // ---------------------------------------------------
+        // display multiplier upgrade details upon mouseenter
         document.querySelector("#purchase-multiplier-upgrade")!
             .addEventListener("click",
                 () => this.#controller.purchaseMultiplierUpgrade());
@@ -66,16 +65,33 @@ export default class CatShelterView {
 
         document.querySelector("#purchase-multiplier-upgrade")!
             .addEventListener("mouseleave", 
-                () => this.#controller.removeUpgradeDesc());
+                () => this.#controller.removeItemDesc());
         //----------------------------------------------------
-
+        // display luxurious trap details upon mouseenter
         document.querySelector("#purchase-luxurious")!
             .addEventListener("click", 
                 () => this.#controller.purchaseLuxuriousTrap());
 
+        document.querySelector("#purchase-luxurious")!
+            .addEventListener("mouseenter", 
+                () => this.#controller.showLuxurious());
+
+        document.querySelector("#purchase-luxurious")!
+            .addEventListener("mouseleave", 
+                () => this.#controller.removeItemDesc());
+        //----------------------------------------------------
+        // display secondhand trap details upon mouseenter
         document.querySelector("#purchase-secondhand")!
             .addEventListener("click", 
                 () => this.#controller.purchaseSecondhandTrap());
+
+        document.querySelector("#purchase-secondhand")!
+            .addEventListener("mouseenter", 
+                () => this.#controller.showSecondhand());
+
+        document.querySelector("#purchase-secondhand")!
+            .addEventListener("mouseleave", 
+                () => this.#controller.removeItemDesc());
         //----------------------------------------------------
             
         document.querySelector("#click-cat")!
@@ -119,6 +135,8 @@ export default class CatShelterView {
             this.#upgradesEl.appendChild(upgradeEl);
         });
 
+        // this block of code refreshes the view of all our list of buildings
+        // empty the entire list then repopulate it with the updated list of buildings
         let buildingLabel = document.createElement("li");
         buildingLabel.innerHTML = /* html */`<strong>${"Your Buildings"}</strong>`;
         this.#buildingsEl.appendChild(buildingLabel);
@@ -126,10 +144,10 @@ export default class CatShelterView {
             let bEl = document.createElement("li");
             if (b instanceof LuxuriousTrap) {
                 bEl.innerHTML = /* html */
-                    `${"What a nice new trap. " + b.efficiency + " per second"}`;
+                    `${b.efficiency + " per second"}`;
             } else if (b instanceof SecondhandTrap) {
                 bEl.innerHTML = /* html */
-                    `${"Never trust Facebook marketplace.. " + b.efficiency + " per second"}`;
+                    `${b.efficiency + " per second"}`;
             }
 
             this.#upgradesEl.appendChild(bEl);

@@ -7,7 +7,9 @@ import CatShelter from '../src/model/catshelter.ts';
 test("Adder Upgrade Invariants Work", () => {
     let caught = false;
     try {
-        let u = new AdderUpgrade(0, 1, new CatShelter("a", "b"));
+        let s = new CatShelter("a", "b");
+            s.cats = 400;
+        let u = new AdderUpgrade(0, 1, s, "hi");
     } catch (e: any) {
         caught = true;
     }
@@ -18,7 +20,9 @@ test("Adder Upgrade Invariants Work", () => {
 test("Multiplier Upgrade Invariants Work", () => {
     let caught = false;
     try {
-        let u = new MultiplierUpgrade(0, 1, new CatShelter("a", "b"));
+        let s = new CatShelter("a", "b");
+            s.cats = 400;
+        let u = new MultiplierUpgrade(0, 1, s, "hi");
     } catch (e: any) {
         caught = true;
     }

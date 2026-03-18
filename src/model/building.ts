@@ -1,6 +1,6 @@
 import type CatShelter from "./catshelter";
 
-//interface that all Upgrades must adhere to 
+//interface that all buildings must adhere to 
 export default interface Building {
     id?: number;
     descriptor: string;

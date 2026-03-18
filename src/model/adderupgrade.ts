@@ -7,7 +7,6 @@ import MultiplierUpgrade from './multiplierupgrade.ts';
 /**
  * An additive upgrade that adds to the power of the user's click
  */
-
 export default class AdderUpgrade {
   id?: number
   shelter: CatShelter;
@@ -31,6 +30,12 @@ export default class AdderUpgrade {
     assert(this.price > 0, "price must be greater than 0");
   }
 
+  /**
+   * this function persists an upgrade to the database
+   * 
+   * @param upgrade upgrade to be saved to the database
+   * @returns the same upgrade that was saved
+   */
   static async saveUpgrade(upgrade: Upgrade): Promise<Upgrade> {
     let type 
     if (upgrade instanceof AdderUpgrade) {
@@ -48,6 +53,13 @@ export default class AdderUpgrade {
     return upgrade;
   }
 
+  /**
+   * this function gets a collection of {@link Upgrade } that belongs to a {@link CatShelter} in the database
+   * this function also retrieves any upgrades of the implementation type {@link MultiplierUpgrade}
+   * 
+   * @param shelter the {@link CatShelter} that we want to retrieve the {@link Upgrade} for
+   * @returns promise of an array of {@link Upgrade}
+   */
   static async getUpgradesForShelter(shelter: CatShelter): Promise<Array<Upgrade>> {
     let results = await db().query<{
 

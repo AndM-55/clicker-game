@@ -1,6 +1,9 @@
 import { assert } from "../assertions";
 import type CatShelter from "./catshelter";
-
+/**
+ * Second hand cat trap, likely from facebook marketplace or something. its not very good 
+ * but it passively collects cats for the current {@link CatShelter}
+ */
 export default class SecondhandTrap {
     id?: number;
     shelter: CatShelter;
@@ -8,9 +11,9 @@ export default class SecondhandTrap {
     price: number;
     efficiency: number
 
-    constructor(shelter: CatShelter, price: number, cps: number) {
+    constructor(shelter: CatShelter, price: number, cps: number, descriptor: string) {
         this.efficiency = cps;
-        this.descriptor = "for now";
+        this.descriptor = descriptor;
         this.price = price;
         this.shelter = shelter;
         this.#checkTrap();
@@ -21,6 +24,11 @@ export default class SecondhandTrap {
         assert(this.price >= 1, "Price must be at least 1 for buildings");
     }
 
+    /**
+     * gets the number of cats to be added to the {@link CatShelter} instance
+     * 
+     * @returns the efficiency of the building, i.e., the number of cats that it will add in one second
+     */
     harvestCats() : number {
         return this.efficiency;
     }

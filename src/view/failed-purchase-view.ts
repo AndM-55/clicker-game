@@ -1,5 +1,9 @@
 import CatShelterController from "../controller/catshelter-controller";
 
+/**
+ * a simple dialog for displaying to the user that they didnt have the funds to 
+ * purchase an upgrade.
+ */
 export default class failedPurchaseView {
     #controller: CatShelterController;
     #dialog: HTMLDialogElement;
@@ -13,14 +17,15 @@ export default class failedPurchaseView {
             <p>Insufficient cats for this transaction. Obtain more cats first</p>
             <button>Close</button>
         `
+        // a close button on the dialog. This forces the user to acknowledge the error
         this.#dialog.querySelector("button")!
             .addEventListener("click", () => {
                 this.#controller.resetFailPurchaseView();
                 document.body.removeChild(this.#dialog);
             })
-        // add to the page:
+
         document.body.appendChild(this.#dialog)
-        // dialogs are hidden by default, show yourself:
+
         this.#dialog.show();
     }
 }
