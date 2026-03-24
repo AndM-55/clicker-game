@@ -81,18 +81,20 @@ export default class CatShelterController {
      * exceptions to be raised properly
      */
     async addShelter(accountName: string, password: string) : Promise<void> {
-        let nameVacancyPromise = CatShelter.checkNameVacant(accountName);
-        return nameVacancyPromise.then(async (value) => {
-            if (value) {
-                this.#catShelter = await CatShelter.create(accountName, password);
-                this.cacheInventory();
-                this.#createOrLoginView = undefined;
-                this.#catShelterView = new CatShelterView(this.#catShelter, this);
-                CatShelter.saveCatShelter(this.#catShelter);
+        let newShelter = await CatShelter.create(accountName, password);
+        try {
+            newShelter = await CatShelter.saveCatShelter(newShelter)
+            this.#catShelter = newShelter;
+            this.#createOrLoginView = undefined;
+            this.#catShelterView = new CatShelterView(this.#catShelter!, this);
+        } catch (e: any) {
+            if (e instanceof UsernameTakenEcxeption) {
+                throw e
             } else {
-                throw new UsernameTakenEcxeption();
+                console.log("unknown error occurred: " + e);
             }
-        })
+            
+        }
     }
 
     /**

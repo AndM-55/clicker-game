@@ -70,17 +70,30 @@ export default class CatShelter {
     }
 
     /**
-     * this function saves the current state of an account/shelter when a shelter is made
-     * or when an upgrade/building is purchased
+     * this function saves to the database when an account/shelter is made
      * 
      * @param shelter the {@link CatShelter} to be persisted
      * @returns a promise of the same shelter that was just persisted
      */
     static async saveCatShelter(shelter: CatShelter): Promise<CatShelter> {
-        await db().query<{ name: string }>("insert into cat_shelter(username, pass, cats) values($1, $2, $3) on conflict do nothing returning username",
-            [shelter.username, shelter.password, shelter.cats]
-        );
+        try {
+            await db().query<{ name: string }>("insert into cat_shelter(username, pass, cats) values($1, $2, $3) returning username",
+            [shelter.username, shelter.password, shelter.cats]);
+        } catch (e: any) {
+            throw new UsernameTakenEcxeption()
+        }
+        
 
+        return shelter;
+    }
+
+    /**
+     * this function saves the upgrades of a shelter to the database
+     * 
+     * @param shelter the shelter whose upgrades will be persisted
+     * @returns a promise of the same shelter whose upgrades we just persisted 
+     */
+    static async saveUpgrades(shelter: CatShelter): Promise<CatShelter> {
         shelter.upgrades.forEach((upgrade) => {
             if (!upgrade.id) {
                 AdderUpgrade.saveUpgrade(upgrade);
@@ -93,7 +106,7 @@ export default class CatShelter {
             }
         });
 
-        return shelter;
+        return shelter
     }
 
     /**
@@ -160,29 +173,6 @@ export default class CatShelter {
     }
 
     /**
-     * this function checks if a Username from the user is available to be used for a new account
-     * 
-     * @param accountName Username provided by user that they are attempting to create an account with
-     * @returns promise of a boolean that evaluates whether the name can be used for a new account
-     */
-    static async checkNameVacant(accountName: string): Promise<boolean> {
-
-        let bool = undefined
-        let results = await db().query<
-            {
-                username: string,
-            }
-        >("select username from cat_shelter where username = $1",
-            [accountName]);
-        if (results.rows.length === 0) {
-            bool = true;
-        } else {
-            bool = false;
-        }
-        return bool;
-    }
-
-    /**
      * this function retrieves all the possible upgrades a user can purchase
      * 
      * @param shelter instance of {@link CatShelter} that we use to construct any {@link Upgrade} instances
@@ -243,7 +233,8 @@ export default class CatShelter {
         } else {
             this.#cats = this.#cats - myUpgrade.price;
             this.#upgrades.push(myUpgrade);
-            CatShelter.saveCatShelter(this);
+            CatShelter.saveUpgrades(this);
+            CatShelter.saveCats(this);
             this.#notifyAll();
         }
 
@@ -260,7 +251,8 @@ export default class CatShelter {
         } else {
             this.#cats = this.#cats - myBuilding.price;
             this.#buildings.push(myBuilding);
-            CatShelter.saveCatShelter(this);
+            CatShelter.saveUpgrades(this);
+            CatShelter.saveCats(this);
             this.#notifyAll();
         }
     }
