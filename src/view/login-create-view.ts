@@ -48,9 +48,6 @@ export default class CreateOrLoginView {
 
         try {
             await this.#controller.login(name, pass);
-
-            // we will start the autoclick and remove the dialog if login successful
-            this.#controller.startAutoClick();
             document.body.removeChild(this.#dialog);
         } catch (e: any) {
             if (e instanceof IncorrectUsernameOrPasswordException) {
@@ -81,8 +78,6 @@ export default class CreateOrLoginView {
 
         try {
             await this.#controller.addShelter(name, pass);
-
-            this.#controller.startAutoClick();
             document.body.removeChild(this.#dialog);
         } catch (e: any) {
             if (e instanceof InvalidAccountNameException) {

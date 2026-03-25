@@ -1,5 +1,7 @@
 import type CatShelterController from "../controller/catshelter-controller";
 import AdderUpgrade from "../model/adderupgrade";
+import type Building from "../model/building";
+import type Upgrade from "../model/upgrade";
 import CatShelter from "../model/catshelter";
 import LuxuriousTrap from "../model/luxurious-trap";
 import MultiplierUpgrade from "../model/multiplierupgrade";
@@ -10,15 +12,20 @@ import SecondhandTrap from "../model/secondhand-trap";
  */
 export default class CatShelterView {
     #catShelter: CatShelter;
+    #buildingsInv: Array<Building>
+    #upgradesInv: Array<Upgrade>
     #upgradesEl: HTMLUListElement;
     #buildingsEl: HTMLUListElement;
     #catsElement: HTMLParagraphElement;
     #controller: CatShelterController;
 
-    constructor(catShelter: CatShelter, controller: CatShelterController) {
+    constructor(catShelter: CatShelter, controller: CatShelterController, upgradesInv: Array<Upgrade>, buildingsInv: Array<Building>) {
         this.#catShelter = catShelter;
         this.#catShelter.registerListener(this);
         this.#controller = controller;
+        this.#buildingsInv = buildingsInv;
+        this.#upgradesInv = upgradesInv;
+        this.startAutoClick();
 
         /**
          * add the visible state of the catshelter to the body of the webpage
@@ -98,7 +105,14 @@ export default class CatShelterView {
             .addEventListener("click", () => this.#controller.clickCat());
     }
 
-
+    /**
+     * this method begins the building auto clicking process for an instance of CatShelter
+     */
+    startAutoClick() {
+        setInterval(() => {
+            this.#controller!.autoClick();
+        }, 1000);
+    }
 
     /**
      * this function updates the view of the entire catshelter 

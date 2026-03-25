@@ -1,5 +1,5 @@
 import CatShelter, { IncorrectUsernameOrPasswordException,
-     InsufficientFundsError, UsernameTakenEcxeption } from "../model/catshelter.ts";
+     InsufficientFundsError, InvalidAccountNameException, UsernameTakenEcxeption } from "../model/catshelter.ts";
 import CatShelterView from "../view/catshelter-view.ts";
 import failedPurchaseView from "../view/failed-purchase-view.ts";
 import CreateShelterView from "../view/login-create-view.ts";
@@ -25,15 +25,6 @@ export default class CatShelterController {
         this.#createOrLoginView = new CreateOrLoginView(this);
     }
      
-    /**
-     * this method begins the building auto clicking process for an instance of CatShelter
-     */
-    startAutoClick() {
-        setInterval(() => {
-            this.#catShelter!.checkTraps();
-        }, 1000);
-    }
-
     /**
      * due to async conflicts with some of my HTML, I created this function to cache the inventory
      * items, so that methods interacting with the view (e.g., {@link showMultUpgradeDesc}) 
@@ -62,7 +53,7 @@ export default class CatShelterController {
             this.#catShelter = shelter;
             this.cacheInventory();
             this.#createOrLoginView = undefined;
-            this.#catShelterView = new CatShelterView(this.#catShelter, this);
+            this.#catShelterView = new CatShelterView(this.#catShelter, this, this.#upgradeInv!, this.#buildingInv!);
         }).catch(reason => {
             if (reason instanceof IncorrectUsernameOrPasswordException) {
                 throw new IncorrectUsernameOrPasswordException();
@@ -81,19 +72,15 @@ export default class CatShelterController {
      * exceptions to be raised properly
      */
     async addShelter(accountName: string, password: string) : Promise<void> {
-        let newShelter = await CatShelter.create(accountName, password);
+        
         try {
-            newShelter = await CatShelter.saveCatShelter(newShelter)
+            let newShelter = await CatShelter.create(accountName, password);
             this.#catShelter = newShelter;
+            this.cacheInventory();
             this.#createOrLoginView = undefined;
-            this.#catShelterView = new CatShelterView(this.#catShelter!, this);
+            this.#catShelterView = new CatShelterView(this.#catShelter!, this, this.#upgradeInv!, this.#buildingInv!);
         } catch (e: any) {
-            if (e instanceof UsernameTakenEcxeption) {
-                throw e
-            } else {
-                console.log("unknown error occurred: " + e);
-            }
-            
+            throw e
         }
     }
 
@@ -184,6 +171,10 @@ export default class CatShelterController {
      */
     clickCat() {
         this.#catShelter!.clickCat();
+    }
+
+    autoClick(){
+        this.#catShelter!.checkTraps();
     }
 
     /**

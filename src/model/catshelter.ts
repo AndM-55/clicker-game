@@ -44,7 +44,7 @@ export default class CatShelter {
      * @param pass Password provided by user for a new account
      * @returns Promise of type {@link CatShelter}
      */
-    static async create(user: string, pass: string): Promise<CatShelter> {
+    static async create(user: string, pass: string): Promise<CatShelter>{
         if (user.length < 1) {
             throw new InvalidAccountNameException();
         }
@@ -53,8 +53,14 @@ export default class CatShelter {
         }
 
         let hashPass = await CatShelter.encrypt(user, pass);
-
-        return new CatShelter(user, hashPass); // calls the constructor before returning 
+        let shelter = new CatShelter(user, hashPass);
+        try {
+            shelter = await CatShelter.saveCatShelter(shelter);
+        } catch (e: any) {
+            throw e;
+        }
+        
+        return shelter  // calls the constructor before returning 
     }
 
     /**
