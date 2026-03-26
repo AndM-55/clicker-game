@@ -1,11 +1,13 @@
 import { assert } from "../assertions";
 import type CatShelter from "./catshelter";
+import type Building from "./building";
 /**
  * Second hand cat trap, likely from facebook marketplace or something. its not very good 
  * but it passively collects cats for the current {@link CatShelter}
  */
 export default class SecondhandTrap {
     id?: number;
+    name: string;
     shelter: CatShelter;
     descriptor: string;
     price: number;
@@ -16,6 +18,7 @@ export default class SecondhandTrap {
         this.descriptor = descriptor;
         this.price = price;
         this.shelter = shelter;
+        this.name = "Secondhand Trap"
         this.#checkTrap();
     }
 
@@ -29,9 +32,13 @@ export default class SecondhandTrap {
      * 
      * @returns the efficiency of the building, i.e., the number of cats that it will add in one second
      */
-    harvestCats() : number {
+    harvestCats(): number {
         return this.efficiency;
+    }
+
+    copy(b: Building): SecondhandTrap {
+        return new SecondhandTrap(b.shelter, b.price, b.efficiency, b.descriptor)
     }
 }
 
-export class InvalidCPSException extends Error {}
+export class InvalidCPSException extends Error { }

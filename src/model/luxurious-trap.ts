@@ -9,6 +9,7 @@ import SecondhandTrap from "./secondhand-trap";
  */
 export default class LuxuriousTrap {
     id?: number;
+    name: string;
     shelter: CatShelter;
     descriptor: string;
     price: number;
@@ -24,6 +25,7 @@ export default class LuxuriousTrap {
         this.descriptor = descriptor;
         this.price = price;
         this.shelter = shelter;
+        this.name = "Luxurious Trap"
         this.#checkTrap();
     }
 
@@ -91,6 +93,10 @@ export default class LuxuriousTrap {
      */
     harvestCats() : number {
         return this.efficiency;
+    }
+
+    copy(b: Building): LuxuriousTrap {
+      return new LuxuriousTrap(b.shelter, b.price, b.efficiency, b.descriptor)
     }
 }
 

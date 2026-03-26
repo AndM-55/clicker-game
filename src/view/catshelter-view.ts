@@ -18,6 +18,7 @@ export default class CatShelterView {
     #buildingsEl: HTMLUListElement;
     #catsElement: HTMLParagraphElement;
     #controller: CatShelterController;
+    #descriptionDialog?: HTMLDialogElement;
 
     constructor(catShelter: CatShelter, controller: CatShelterController, upgradesInv: Array<Upgrade>, buildingsInv: Array<Building>) {
         this.#catShelter = catShelter;
@@ -35,10 +36,7 @@ export default class CatShelterView {
         document.querySelector("#app")!.innerHTML = /* html */
             `<div id ='catShelter'>
                 <h1>Welcome, ${this.#catShelter.username}</h1>
-                <button id="purchase-adder-upgrade">Purchase Adder Upgrade</button>
-                <button id="purchase-multiplier-upgrade">Purchase Multiplier Upgrade</button>
-                <button id="purchase-secondhand">Purchase Secondhand Trap</button>
-                <button id="purchase-luxurious">Purchase Luxurious Trap</button>
+                <ul id=purchase-buttons></ul>
                 <button id="click-cat">Click To Adopt Cats!</button>
                 <p>${this.#catShelter.cats + " cats"}</p>
                 <h3>Your Upgrades</h3>
@@ -50,61 +48,72 @@ export default class CatShelterView {
         this.#catsElement = document.querySelector("#catShelter > p")!
         this.#buildingsEl = document.querySelector("#building-list")!
 
-        // display adder upgrade details upon mouseenter
-        document.querySelector("#purchase-adder-upgrade")!
-            .addEventListener("click",
-                () => this.#controller.purchaseAdderUpgrade());
+        const buttonList = document.querySelector("#purchase-buttons")! as HTMLUListElement
+        buttonList.style.listStyleType = "none";
+        buttonList.style.padding = "0";
 
-        document.querySelector("#purchase-adder-upgrade")!
-            .addEventListener("mouseenter", 
-                () => this.#controller.showAddUpgradeDesc());
+        for (let upgrade of this.#upgradesInv) {
+            let li = document.createElement("li");
+            let button = document.createElement("button")
 
-        document.querySelector("#purchase-adder-upgrade")!
-            .addEventListener("mouseleave", 
-                () => this.#controller.removeItemDesc());
-        // ---------------------------------------------------
-        // display multiplier upgrade details upon mouseenter
-        document.querySelector("#purchase-multiplier-upgrade")!
-            .addEventListener("click",
-                () => this.#controller.purchaseMultiplierUpgrade());
+            button.id = upgrade.descriptor
+            button.textContent = `Purchase ${upgrade.name}`
 
-        document.querySelector("#purchase-multiplier-upgrade")!
-            .addEventListener("mouseenter", 
-                () => this.#controller.showMultUpgradeDesc());
+            li.appendChild(button)
+            buttonList.appendChild(li);
 
-        document.querySelector("#purchase-multiplier-upgrade")!
-            .addEventListener("mouseleave", 
-                () => this.#controller.removeItemDesc());
-        //----------------------------------------------------
-        // display luxurious trap details upon mouseenter
-        document.querySelector("#purchase-luxurious")!
-            .addEventListener("click", 
-                () => this.#controller.purchaseLuxuriousTrap());
+            button.addEventListener('click', () => {
+                this.#controller.purchaseUpgrade(upgrade)
+            })
+            button.addEventListener('mouseenter', () => {
+                this.#descriptionDialog = document.createElement("dialog");
+                this.#descriptionDialog.id = "upgrade-desc-dialog";
+                this.#descriptionDialog.innerHTML = /*html */`
+                    <p>${upgrade.descriptor}</p>
+                    <p>costs ${upgrade.price} cats</p>
+                 `
+                document.body.appendChild(this.#descriptionDialog)
+                this.#descriptionDialog.show();
+            })
+            button.addEventListener('mouseleave', () => {
+                this.removeDialog();
+            })
+        }
 
-        document.querySelector("#purchase-luxurious")!
-            .addEventListener("mouseenter", 
-                () => this.#controller.showLuxurious());
+        for (let building of this.#buildingsInv) {
+            let li = document.createElement("li");
+            let button = document.createElement("button")
 
-        document.querySelector("#purchase-luxurious")!
-            .addEventListener("mouseleave", 
-                () => this.#controller.removeItemDesc());
-        //----------------------------------------------------
-        // display secondhand trap details upon mouseenter
-        document.querySelector("#purchase-secondhand")!
-            .addEventListener("click", 
-                () => this.#controller.purchaseSecondhandTrap());
+            button.id = building.descriptor
+            button.textContent = `Purchase ${building.name}`
 
-        document.querySelector("#purchase-secondhand")!
-            .addEventListener("mouseenter", 
-                () => this.#controller.showSecondhand());
+            li.appendChild(button)
+            buttonList.appendChild(li);
 
-        document.querySelector("#purchase-secondhand")!
-            .addEventListener("mouseleave", 
-                () => this.#controller.removeItemDesc());
-        //----------------------------------------------------
-            
+            button.addEventListener('click', () => {
+                this.#controller.purchaseBuilding(building)
+            })
+            button.addEventListener('mouseenter', () => {
+                this.#descriptionDialog = document.createElement("dialog");
+                this.#descriptionDialog.id = "upgrade-desc-dialog";
+                this.#descriptionDialog.innerHTML = /*html */`
+                    <p>${building.descriptor}</p>
+                    <p>costs ${building.price} cats</p>
+                 `
+                document.body.appendChild(this.#descriptionDialog)
+                this.#descriptionDialog.show();
+            })
+            button.addEventListener('mouseleave', () => {
+                this.removeDialog();
+            })
+        }
+
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
+    }
+
+    removeDialog() {
+        document.body.removeChild(this.#descriptionDialog!);
     }
 
     /**

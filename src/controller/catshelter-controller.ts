@@ -1,5 +1,7 @@
-import CatShelter, { IncorrectUsernameOrPasswordException,
-     InsufficientFundsError } from "../model/catshelter.ts";
+import CatShelter, {
+    IncorrectUsernameOrPasswordException,
+    InsufficientFundsError
+} from "../model/catshelter.ts";
 import CatShelterView from "../view/catshelter-view.ts";
 import failedPurchaseView from "../view/failed-purchase-view.ts";
 import CreateShelterView from "../view/login-create-view.ts";
@@ -24,18 +26,22 @@ export default class CatShelterController {
     constructor() {
         this.#createOrLoginView = new CreateOrLoginView(this);
     }
-     
+
     /**
      * due to async conflicts with some of my HTML, I created this function to cache the inventory
      * items, so that methods interacting with the view (e.g., {@link showMultUpgradeDesc}) 
      * behave as intended. These arrays of inventory are stored as instance variables to be accessed as needed
      */
     async cacheInventory(): Promise<void> {
-        let adderPromise = await CatShelter.getUpgradeInventory(this.#catShelter!)
-        this.#upgradeInv = adderPromise;
-
-        let multPromise = await CatShelter.getBuildingInventory(this.#catShelter!)
-        this.#buildingInv = multPromise
+        await Promise.all([
+        CatShelter.getUpgradeInventory(this.#catShelter!).then((arr) => {
+            this.#upgradeInv = arr;
+        }),
+        CatShelter.getBuildingInventory(this.#catShelter!).then((arr) => {
+            this.#buildingInv = arr;
+        })
+    ]);
+        
     }
 
     /**
@@ -51,9 +57,11 @@ export default class CatShelterController {
 
         return shelterPromise.then((shelter) => {
             this.#catShelter = shelter;
-            this.cacheInventory();
-            this.#createOrLoginView = undefined;
-            this.#catShelterView = new CatShelterView(this.#catShelter, this, this.#upgradeInv!, this.#buildingInv!);
+            this.cacheInventory().then(() => {
+                this.#createOrLoginView = undefined;
+                this.#catShelterView = new CatShelterView(this.#catShelter!, this, this.#upgradeInv!, this.#buildingInv!);
+            });
+
         }).catch(reason => {
             if (reason instanceof IncorrectUsernameOrPasswordException) {
                 throw new IncorrectUsernameOrPasswordException();
@@ -71,14 +79,15 @@ export default class CatShelterController {
      * @returns a Promise<void>. It seemed to be needed in order for 
      * exceptions to be raised properly
      */
-    async addShelter(accountName: string, password: string) : Promise<void> {
-        
+    async addShelter(accountName: string, password: string): Promise<void> {
+
         try {
             let newShelter = await CatShelter.create(accountName, password);
             this.#catShelter = newShelter;
-            this.cacheInventory();
-            this.#createOrLoginView = undefined;
-            this.#catShelterView = new CatShelterView(this.#catShelter!, this, this.#upgradeInv!, this.#buildingInv!);
+            this.cacheInventory().then(() => {
+                this.#createOrLoginView = undefined;
+                this.#catShelterView = new CatShelterView(this.#catShelter!, this, this.#upgradeInv!, this.#buildingInv!);
+            });
         } catch (e: any) {
             throw e
         }
@@ -95,51 +104,25 @@ export default class CatShelterController {
      * fixing the error of {@link ItemView} conflicting with the async nature of retrieving the inventory
      * items.
      */
-    purchaseLuxuriousTrap() {
-        this.cacheInventory();
-
-       try {
-            this.#buildingInv?.forEach(b => {
-                if (b instanceof LuxuriousTrap) {
-                    this.#catShelter!.purchaseBuilding(b!);
-                }
-            })
-        } catch (e: any) {
-            if (e instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
-                this.#failedPurchaseView = new failedPurchaseView(this);
-            }
-        }
-    }
-
-    /**
-     * this function attempts to purchase a {@link SecondhandTrap} through {@link CatShelter.purchaseBuilding}
-     */
-    purchaseSecondhandTrap() {
-        this.cacheInventory();
+    purchaseBuilding(b: Building) {
+        let newBuilding = b.copy(b);
         try {
-            this.#buildingInv?.forEach(b => {
-                if (b instanceof SecondhandTrap) {
-                    this.#catShelter!.purchaseBuilding(b!);
-                }
-            })
+            this.#catShelter!.purchaseBuilding(newBuilding!);
         } catch (e: any) {
             if (e instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
                 this.#failedPurchaseView = new failedPurchaseView(this);
             }
         }
     }
+
 
     /**
      * this function attempts to purchase a {@link AdderUpgrade} through {@link CatShelter.purchaseUpgrade}
      */
-    purchaseAdderUpgrade(): void {
-        this.cacheInventory();
+    purchaseUpgrade(u: Upgrade): void {
+        let newUpgrade = u.copy(u); 
         try {
-            this.#upgradeInv?.forEach(u => {
-                if (u instanceof AdderUpgrade) {
-                    this.#catShelter!.purchaseUpgrade(u!);
-                }
-            })
+            this.#catShelter!.purchaseUpgrade(newUpgrade!);
         } catch (error: any) {
             if (error instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
                 this.#failedPurchaseView = new failedPurchaseView(this);
@@ -148,23 +131,6 @@ export default class CatShelterController {
 
     }
 
-    /**
-     * this function attempts to purchase a {@link MultiplierUpgrade} through {@link CatShelter.purchaseUpgrade}
-     */
-    purchaseMultiplierUpgrade(): void {
-        this.cacheInventory();
-        try {
-            this.#upgradeInv?.forEach(u => {
-                if (u instanceof MultiplierUpgrade) {
-                    this.#catShelter!.purchaseUpgrade(u!);
-                }
-            })
-        } catch (error: any) {
-            if (error instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
-                this.#failedPurchaseView = new failedPurchaseView(this);
-            }
-        }
-    }
 
     /**
      * runs the {@link CatShelter.clickCat} function 
@@ -173,7 +139,7 @@ export default class CatShelterController {
         this.#catShelter!.clickCat();
     }
 
-    autoClick(){
+    autoClick() {
         this.#catShelter!.checkTraps();
     }
 

@@ -9,6 +9,7 @@ import MultiplierUpgrade from './multiplierupgrade.ts';
  */
 export default class AdderUpgrade {
   id?: number
+  name: string
   shelter: CatShelter;
   descriptor: string;
   price: number;
@@ -19,6 +20,7 @@ export default class AdderUpgrade {
     this.#addend = addend;
     this.price = price
     this.descriptor = descriptor;
+    this.name = "Adder Upgrade"
     if (this.#addend < 1) {
       throw new InvalidAddendException();
     }
@@ -37,7 +39,7 @@ export default class AdderUpgrade {
    * @returns the same upgrade that was saved
    */
   static async saveUpgrade(upgrade: Upgrade): Promise<Upgrade> {
-    let type 
+    let type
     if (upgrade instanceof AdderUpgrade) {
       type = "addclick";
     } else {
@@ -96,6 +98,11 @@ export default class AdderUpgrade {
 
   get power() {
     return this.#addend;
+  }
+
+  copy(u: Upgrade): AdderUpgrade {
+    let newUpgrade = new AdderUpgrade(u.power, u.price, u.shelter, u.descriptor)
+    return newUpgrade;
   }
 }
 
