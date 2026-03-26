@@ -90,15 +90,15 @@ export default class CatShelterController {
     }
 
     /**
-     * this function attempts to purchase a {@link LuxuriousTrap} through {@link CatShelter.purchaseBuilding}
+     * this function attempts to purchase a {@link Building} through {@link CatShelter.purchaseBuilding}
      * 
-     * in each purchase function within the controller class (there are four total),
-     * I recache the inventory to reset the ID's of the instances. If we don't, any subsequent purchase of
-     * an item causes the instance to not be persisted. (see {@link CatShelter.saveCatShelter} to understand why)
-     * 
-     * to reiterate, this cacheInventory() helper function was the easiest solution I could find for 
-     * fixing the error of {@link ItemView} conflicting with the async nature of retrieving the inventory
-     * items.
+     * @param b is the building we want to add, with a caveat: 
+     *      the view hands this instance to the controller, but in order to ensure it's
+     *      treated as a new instane without an ID (for proper persisting)
+     *      we make a deep copy of this type of building. Otherwise {@link LuxuriousTrap.saveBuilding}
+     *      gives an ID to the inventory instance in the view, and that instance won't be persisted anymore when 
+     *      the view passes it.
+     *      
      */
     purchaseBuilding(b: Building) {
         let newBuilding = b.copy(b);
@@ -113,7 +113,9 @@ export default class CatShelterController {
 
 
     /**
-     * this function attempts to purchase a {@link AdderUpgrade} through {@link CatShelter.purchaseUpgrade}
+     * this function attempts to purchase a {@link Upgrade} through {@link CatShelter.purchaseUpgrade}
+     * 
+     * @param u is the upgrade we want to add, with a similar caveat to {@link purchaseBuilding}   
      */
     purchaseUpgrade(u: Upgrade): void {
         let newUpgrade = u.copy(u);

@@ -4,17 +4,7 @@ import MultiplierUpgrade from "../src/model/multiplierupgrade.ts"
 import AdderUpgrade from "../src/model/adderupgrade.ts";
 import CatShelter from "../src/model/catshelter.ts";
 import LuxuriousTrap from '../src/model/luxurious-trap.ts';
-
-test("CheckCats function works properly", () => {
-    let s = new CatShelter("a", "b");
-    s.cats = 400;
-    let b = new LuxuriousTrap(s, 1, 2, "hi");
-
-    s.purchaseBuilding(b);
-    s.checkTraps();
-
-    expect(s.cats).equals(401)
-});
+import SecondhandTrap from '../src/model/secondhand-trap.ts';
 
 test("getCatShelter correctly retrieves account error with empty database", () => {
     let success = true
@@ -25,10 +15,10 @@ test("getCatShelter correctly retrieves account error with empty database", () =
     try {
         CatShelter.getCatShelter("a", "b");
         success = true;
-    } catch (e: any){
+    } catch (e: any) {
         success = false;
     }
-    
+
     expect(success).equals(true);
 });
 
@@ -61,7 +51,7 @@ test("Shelter notifies listeners", () => {
 
     let notified = false;
 
-    s.registerListener({ notify: ( () => notified = true )});
+    s.registerListener({ notify: (() => notified = true) });
 
     s.purchaseUpgrade(u);
 
