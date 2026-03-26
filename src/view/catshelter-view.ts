@@ -41,12 +41,14 @@ export default class CatShelterView {
                 <button id="purchase-luxurious">Purchase Luxurious Trap</button>
                 <button id="click-cat">Click To Adopt Cats!</button>
                 <p>${this.#catShelter.cats + " cats"}</p>
-                <ul></ul>
-                <ul></ul>
+                <h3>Your Upgrades</h3>
+                <ul id="upgrade-list"></ul>
+                <h3>Your Buildings</h3>
+                <ul id="building-list"></ul>
             </div>`
-        this.#upgradesEl = document.querySelector("#catShelter > ul")!
+        this.#upgradesEl = document.querySelector("#upgrade-list")!
         this.#catsElement = document.querySelector("#catShelter > p")!
-        this.#buildingsEl = document.querySelector("#catShelter > ul")!
+        this.#buildingsEl = document.querySelector("#building-list")!
 
         // display adder upgrade details upon mouseenter
         document.querySelector("#purchase-adder-upgrade")!
@@ -133,9 +135,6 @@ export default class CatShelterView {
 
         // this block of code refreshes the view of all our list of upgrades
         // empty the entire list then repopulate it with the updated list of upgrades
-        let upgradeLabel = document.createElement("li");
-        upgradeLabel.innerHTML = /* html */`<strong>${"Your Upgrades"}</strong>`;
-        this.#upgradesEl.appendChild(upgradeLabel);
         this.#catShelter.upgrades.forEach(upgrade => {
             let upgradeEl = document.createElement("li");
             if (upgrade instanceof AdderUpgrade) {
@@ -151,9 +150,6 @@ export default class CatShelterView {
 
         // this block of code refreshes the view of all our list of buildings
         // empty the entire list then repopulate it with the updated list of buildings
-        let buildingLabel = document.createElement("li");
-        buildingLabel.innerHTML = /* html */`<strong>${"Your Buildings"}</strong>`;
-        this.#buildingsEl.appendChild(buildingLabel);
         this.#catShelter.buildings.forEach(b => {
             let bEl = document.createElement("li");
             if (b instanceof LuxuriousTrap) {
@@ -164,7 +160,7 @@ export default class CatShelterView {
                     `${b.efficiency + " per second"}`;
             }
 
-            this.#upgradesEl.appendChild(bEl);
+            this.#buildingsEl.appendChild(bEl);
         })
     }
 }

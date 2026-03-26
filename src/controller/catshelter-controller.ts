@@ -1,5 +1,5 @@
 import CatShelter, { IncorrectUsernameOrPasswordException,
-     InsufficientFundsError, InvalidAccountNameException, UsernameTakenEcxeption } from "../model/catshelter.ts";
+     InsufficientFundsError } from "../model/catshelter.ts";
 import CatShelterView from "../view/catshelter-view.ts";
 import failedPurchaseView from "../view/failed-purchase-view.ts";
 import CreateShelterView from "../view/login-create-view.ts";
