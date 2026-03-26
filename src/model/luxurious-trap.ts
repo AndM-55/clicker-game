@@ -67,7 +67,7 @@ export default class LuxuriousTrap {
           buildingtype: string
           shelter: string
     
-        }>("select id, efficiency, price, descriptor, buildingtype, shelter from building where shelter = $1",
+        }>("select * from building where shelter = $1",
           [shelter.username]);
     
         let allBuildings = new Array<Building>;
@@ -95,6 +95,12 @@ export default class LuxuriousTrap {
         return this.efficiency;
     }
 
+    /**
+     * this function deep copies an instance of a building
+     * 
+     * @param b instance to be deep copied
+     * @returns the deep copy 
+     */
     copy(b: Building): LuxuriousTrap {
       return new LuxuriousTrap(b.shelter, b.price, b.efficiency, b.descriptor)
     }

@@ -10,13 +10,9 @@ import type Upgrade from "../model/upgrade.ts";
 import type Building from "../model/building.ts";
 import LuxuriousTrap from "../model/luxurious-trap.ts";
 import AdderUpgrade from "../model/adderupgrade.ts";
-import MultiplierUpgrade from "../model/multiplierupgrade.ts";
-import SecondhandTrap from "../model/secondhand-trap.ts";
-import ItemView from "../view/item-view.ts";
 
 export default class CatShelterController {
     #catShelter?: CatShelter;
-    #itemView?: ItemView;
     #failedPurchaseView?: failedPurchaseView;
     #createOrLoginView?: CreateShelterView;
     #catShelterView?: CatShelterView;
@@ -34,14 +30,14 @@ export default class CatShelterController {
      */
     async cacheInventory(): Promise<void> {
         await Promise.all([
-        CatShelter.getUpgradeInventory(this.#catShelter!).then((arr) => {
-            this.#upgradeInv = arr;
-        }),
-        CatShelter.getBuildingInventory(this.#catShelter!).then((arr) => {
-            this.#buildingInv = arr;
-        })
-    ]);
-        
+            CatShelter.getUpgradeInventory(this.#catShelter!).then((arr) => {
+                this.#upgradeInv = arr;
+            }),
+            CatShelter.getBuildingInventory(this.#catShelter!).then((arr) => {
+                this.#buildingInv = arr;
+            })
+        ]);
+
     }
 
     /**
@@ -120,7 +116,7 @@ export default class CatShelterController {
      * this function attempts to purchase a {@link AdderUpgrade} through {@link CatShelter.purchaseUpgrade}
      */
     purchaseUpgrade(u: Upgrade): void {
-        let newUpgrade = u.copy(u); 
+        let newUpgrade = u.copy(u);
         try {
             this.#catShelter!.purchaseUpgrade(newUpgrade!);
         } catch (error: any) {
@@ -139,62 +135,14 @@ export default class CatShelterController {
         this.#catShelter!.clickCat();
     }
 
+    /**
+     * this function calls the check traps function from {@link CatShelter}
+     */
     autoClick() {
         this.#catShelter!.checkTraps();
     }
 
-    /**
-     * creates a {@link ItemView} to display the information of {@link MultiplierUpgrade}
-     */
-    showMultUpgradeDesc() {
-        this.#upgradeInv?.forEach(u => {
-            if (u instanceof MultiplierUpgrade) {
-                this.#itemView = new ItemView(this, u.descriptor, u.price);
-            }
-        })
-
-    }
-
-    /**
-     * creates a {@link ItemView} to display the information of {@link AdderUpgrade}
-     */
-    showAddUpgradeDesc() {
-        this.#upgradeInv?.forEach(u => {
-            if (u instanceof AdderUpgrade) {
-                this.#itemView = new ItemView(this, u.descriptor, u.price);
-            }
-        })
-    }
-
-    /**
-     * creates a {@link ItemView} to display the information of {@link SecondhandTrap}
-     */
-    showSecondhand() {
-        this.#buildingInv?.forEach(b => {
-            if (b instanceof SecondhandTrap) {
-                this.#itemView = new ItemView(this, b.descriptor, b.price);
-            }
-        })
-    }
-
-    /**
-     * creates a {@link ItemView} to display the information of {@link LuxuriousTrap}
-     */
-    showLuxurious() {
-        this.#buildingInv?.forEach(b => {
-            if (b instanceof LuxuriousTrap) {
-                this.#itemView = new ItemView(this, b.descriptor, b.price);
-            }
-        })
-    }
-
-    /**
-     * removes the {@link ItemView} description dialog from the view
-     */
-    removeItemDesc(): void {
-        this.#itemView?.removeDialog();
-    }
-
+    // this function resets the failed purchase instance variable. necessary for deciding when to create this view 
     resetFailPurchaseView() {
         this.#failedPurchaseView = undefined;
     }

@@ -45,6 +45,12 @@ export default class MultiplierUpgrade {
         return this.#multiplier;
     }
 
+    /**
+    * this function deep copies an instance of an upgrade
+    * 
+    * @param u instance to be deep copied
+    * @returns the deep copy 
+    */
     copy(u: Upgrade): MultiplierUpgrade {
         let newUpgrade = new MultiplierUpgrade(u.power, u.price, u.shelter, u.descriptor)
         return newUpgrade;

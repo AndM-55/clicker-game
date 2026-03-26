@@ -31,7 +31,7 @@ export default class CatShelterView {
         /**
          * add the visible state of the catshelter to the body of the webpage
          * 
-         * It has 3 buttons, a constant display of the number of cats, and an unordered list of upgrades
+         * It has 5 buttons, one for each purchasable thing and one for the click to increase count
          */
         document.querySelector("#app")!.innerHTML = /* html */
             `<div id ='catShelter'>
@@ -52,6 +52,7 @@ export default class CatShelterView {
         buttonList.style.listStyleType = "none";
         buttonList.style.padding = "0";
 
+        // create the upgrade buttons 
         for (let upgrade of this.#upgradesInv) {
             let li = document.createElement("li");
             let button = document.createElement("button")
@@ -80,6 +81,7 @@ export default class CatShelterView {
             })
         }
 
+        //create the buildings buttons 
         for (let building of this.#buildingsInv) {
             let li = document.createElement("li");
             let button = document.createElement("button")
@@ -108,10 +110,12 @@ export default class CatShelterView {
             })
         }
 
+        // create the click-cat button 
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
     }
 
+    // this method removes any purchasable's description popup from the view
     removeDialog() {
         document.body.removeChild(this.#descriptionDialog!);
     }

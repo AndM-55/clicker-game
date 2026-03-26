@@ -72,7 +72,7 @@ export default class AdderUpgrade {
       upgradetype: string
       shelter: string
 
-    }>("select id, strength, price, descriptor, upgradetype, shelter from upgrade where shelter = $1",
+    }>("select * from upgrade where shelter = $1",
       [shelter.username]);
 
     let allUpgrades = new Array<Upgrade>;
@@ -100,6 +100,12 @@ export default class AdderUpgrade {
     return this.#addend;
   }
 
+  /**
+  * this function deep copies an instance of an upgrade
+  * 
+  * @param u instance to be deep copied
+  * @returns the deep copy 
+  */
   copy(u: Upgrade): AdderUpgrade {
     let newUpgrade = new AdderUpgrade(u.power, u.price, u.shelter, u.descriptor)
     return newUpgrade;

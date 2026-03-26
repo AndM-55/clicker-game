@@ -36,6 +36,12 @@ export default class SecondhandTrap {
         return this.efficiency;
     }
 
+    /**
+     * this function deep copies an instance of a building
+     * 
+     * @param b instance to be deep copied
+     * @returns the deep copy 
+     */
     copy(b: Building): SecondhandTrap {
         return new SecondhandTrap(b.shelter, b.price, b.efficiency, b.descriptor)
     }
