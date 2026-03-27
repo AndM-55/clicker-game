@@ -4,6 +4,7 @@ import type CatShelter from "./catshelter";
 export default interface Building {
     id?: number;
     name: string;
+    mechanic: string
     descriptor: string;
     shelter: CatShelter;
     efficiency: number;

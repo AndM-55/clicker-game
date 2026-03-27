@@ -8,17 +8,19 @@ import type Building from "./building";
 export default class SecondhandTrap {
     id?: number;
     name: string;
+    mechanic: string
     shelter: CatShelter;
     descriptor: string;
     price: number;
     efficiency: number
 
-    constructor(shelter: CatShelter, price: number, cps: number, descriptor: string) {
+    constructor(mechanic: string, name: string, shelter: CatShelter, price: number, cps: number, descriptor: string) {
         this.efficiency = cps;
         this.descriptor = descriptor;
         this.price = price;
+        this.mechanic = mechanic
         this.shelter = shelter;
-        this.name = "Secondhand Trap"
+        this.name = name
         this.#checkTrap();
     }
 
@@ -43,7 +45,7 @@ export default class SecondhandTrap {
      * @returns the deep copy 
      */
     copy(b: Building): SecondhandTrap {
-        return new SecondhandTrap(b.shelter, b.price, b.efficiency, b.descriptor)
+        return new SecondhandTrap(b.mechanic, b.name, b.shelter, b.price, b.efficiency, b.descriptor)
     }
 }
 

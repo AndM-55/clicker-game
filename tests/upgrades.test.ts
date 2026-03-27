@@ -9,7 +9,7 @@ test("Adder Upgrade Invariants Work", () => {
     try {
         let s = new CatShelter("a", "b");
             s.cats = 400;
-        let u = new AdderUpgrade(0, 1, s, "hi");
+        let u = new AdderUpgrade("f", "f", 0, 1, s, "hi");
     } catch (e: any) {
         caught = true;
     }
@@ -22,7 +22,7 @@ test("Multiplier Upgrade Invariants Work", () => {
     try {
         let s = new CatShelter("a", "b");
             s.cats = 400;
-        let u = new MultiplierUpgrade(0, 1, s, "hi");
+        let u = new MultiplierUpgrade("f", "f", 0, 1, s, "hi");
     } catch (e: any) {
         caught = true;
     }

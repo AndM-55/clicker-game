@@ -8,7 +8,7 @@ test("Luxurious trap invariants work", () => {
         try {
             let s = new CatShelter("a", "b");
                 s.cats = 400;
-            let u = new LuxuriousTrap(s, 0, 2, "hi");
+            let u = new LuxuriousTrap("f", "f", s, 0, 2, "hi");
         } catch (e: any) {
             caught = true;
         }
@@ -21,7 +21,7 @@ test("Secondhand trap invariants work", () => {
         try {
             let s = new CatShelter("a", "b");
                 s.cats = 400;
-            let u = new SecondhandTrap(s, 0, 2, "hi");
+            let u = new SecondhandTrap("f", "f", s, 0, 2, "hi");
         } catch (e: any) {
             caught = true;
         }

@@ -9,18 +9,20 @@ import MultiplierUpgrade from './multiplierupgrade.ts';
  */
 export default class AdderUpgrade {
   id?: number
+  mechanic: string
   name: string
   shelter: CatShelter;
   descriptor: string;
   price: number;
   #addend: number;
 
-  constructor(addend: number, price: number, shelter: CatShelter, descriptor: string) {
+  constructor(mechanic: string, name: string, addend: number, price: number, shelter: CatShelter, descriptor: string) {
     this.shelter = shelter;
     this.#addend = addend;
+    this.mechanic = mechanic
     this.price = price
     this.descriptor = descriptor;
-    this.name = "Adder Upgrade"
+    this.name = name
     if (this.#addend < 1) {
       throw new InvalidAddendException();
     }
@@ -39,15 +41,10 @@ export default class AdderUpgrade {
    * @returns the same upgrade that was saved
    */
   static async saveUpgrade(upgrade: Upgrade): Promise<Upgrade> {
-    let type
-    if (upgrade instanceof AdderUpgrade) {
-      type = "addclick";
-    } else {
-      type = "multclick";
-    }
+    let mechanic = upgrade.mechanic
 
-    let results = await db().query<{ id: number }>("insert into upgrade(id, strength, price, descriptor, upgradeType, shelter) values(default, $1, $2, $3, $4, $5) returning id",
-      [upgrade.power, upgrade.price, upgrade.descriptor, type, upgrade.shelter.username]);
+    let results = await db().query<{ id: number }>("insert into upgrade(id, name, strength, price, descriptor, mechanic, shelter) values(default, $1, $2, $3, $4, $5, $6) returning id",
+      [upgrade.name, upgrade.power, upgrade.price, upgrade.descriptor, mechanic, upgrade.shelter.username]);
 
     let row = results.rows[0];
     upgrade.id = row.id;
@@ -66,10 +63,11 @@ export default class AdderUpgrade {
     let results = await db().query<{
 
       id: number
+      name: string
       strength: number
       price: number
       descriptor: string
-      upgradetype: string
+      mechanic: string
       shelter: string
 
     }>("select * from upgrade where shelter = $1",
@@ -79,10 +77,10 @@ export default class AdderUpgrade {
 
     results.rows.forEach(row => {
       let u;
-      if (row.upgradetype === "addclick") {
-        u = new AdderUpgrade(row.strength, row.price, shelter, row.descriptor);
+      if (row.mechanic === "add") {
+        u = new AdderUpgrade(row.mechanic, row.name, row.strength, row.price, shelter, row.descriptor);
       } else {
-        u = new MultiplierUpgrade(row.strength, row.price, shelter, row.descriptor);
+        u = new MultiplierUpgrade(row.mechanic, row.name, row.strength, row.price, shelter, row.descriptor);
       }
       u.id = row.id;
       allUpgrades.push(u)
@@ -107,7 +105,7 @@ export default class AdderUpgrade {
   * @returns the deep copy 
   */
   copy(u: Upgrade): AdderUpgrade {
-    let newUpgrade = new AdderUpgrade(u.power, u.price, u.shelter, u.descriptor)
+    let newUpgrade = new AdderUpgrade(u.mechanic, u.name, u.power, u.price, u.shelter, u.descriptor)
     return newUpgrade;
   }
 }

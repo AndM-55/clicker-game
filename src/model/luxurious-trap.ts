@@ -10,6 +10,7 @@ import SecondhandTrap from "./secondhand-trap";
 export default class LuxuriousTrap {
     id?: number;
     name: string;
+    mechanic: string;
     shelter: CatShelter;
     descriptor: string;
     price: number;
@@ -20,12 +21,13 @@ export default class LuxuriousTrap {
         assert(this.price >= 1, "Price must be at least 1 for buildings");
     }
 
-    constructor(shelter: CatShelter, price: number, cps: number, descriptor: string) {
+    constructor(mechanic: string, name: string, shelter: CatShelter, price: number, cps: number, descriptor: string) {
         this.efficiency = cps;
         this.descriptor = descriptor;
         this.price = price;
+        this.mechanic = mechanic;
         this.shelter = shelter;
-        this.name = "Luxurious Trap"
+        this.name = name
         this.#checkTrap();
     }
 
@@ -36,15 +38,10 @@ export default class LuxuriousTrap {
      * @returns a promise of the building that was persisted
      */
     static async saveBuilding(building: Building): Promise<Building> {
-        let type 
-        if (building instanceof LuxuriousTrap) {
-          type = "luxurious";
-        } else {
-          type = "secondhand";
-        }
+        let mechanic = building.mechanic
     
-        let results = await db().query<{ id: number }>("insert into building(id, efficiency, price, descriptor, buildingtype, shelter) values(default, $1, $2, $3, $4, $5) returning id",
-          [building.efficiency, building.price, building.descriptor, type, building.shelter.username]);
+        let results = await db().query<{ id: number }>("insert into building(id, name, efficiency, price, descriptor, mechanic, shelter) values(default, $1, $2, $3, $4, $5, $6) returning id",
+          [building.name, building.efficiency, building.price, building.descriptor, mechanic, building.shelter.username]);
     
         let row = results.rows[0];
         building.id = row.id;
@@ -61,10 +58,11 @@ export default class LuxuriousTrap {
     static async getBuildingsForShelter(shelter: CatShelter): Promise<Array<Building>> {
         let results = await db().query<{
           id: number
+          name: string;
           efficiency: number
           price: number
           descriptor: string
-          buildingtype: string
+          mechanic: string
           shelter: string
     
         }>("select * from building where shelter = $1",
@@ -74,10 +72,10 @@ export default class LuxuriousTrap {
     
         results.rows.forEach(row => {
           let b;
-          if (row.buildingtype === "luxurious") {
-            b = new LuxuriousTrap(shelter, row.price, row.efficiency, row.descriptor);
+          if (row.mechanic === "luxurious") {
+            b = new LuxuriousTrap(row.mechanic, row.name, shelter, row.price, row.efficiency, row.descriptor);
           } else {
-            b = new SecondhandTrap(shelter, row.price, row.efficiency, row.descriptor);
+            b = new SecondhandTrap(row.mechanic, row.name, shelter, row.price, row.efficiency, row.descriptor);
           }
           b.id = row.id;
           allBuildings.push(b)
@@ -102,7 +100,7 @@ export default class LuxuriousTrap {
      * @returns the deep copy 
      */
     copy(b: Building): LuxuriousTrap {
-      return new LuxuriousTrap(b.shelter, b.price, b.efficiency, b.descriptor)
+      return new LuxuriousTrap(b.mechanic, b.name, b.shelter, b.price, b.efficiency, b.descriptor)
     }
 }
 

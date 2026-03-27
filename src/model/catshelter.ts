@@ -149,7 +149,7 @@ export default class CatShelter {
                 pass: string,
                 cats: number,
             }
-        >("select username, pass, cats from cat_shelter where username = $1",
+        >("select * from cat_shelter where username = $1",
             [accountName]);
 
         let shelter;
@@ -186,6 +186,7 @@ export default class CatShelter {
      */
     static async getUpgradeInventory(shelter: CatShelter) : Promise<Array<Upgrade>> {
         let results = await db().query<{ 
+            name: string;
             mechanic: string;
             price: number;
             descriptor: string;
@@ -195,9 +196,9 @@ export default class CatShelter {
         let upgradesArray = new Array<Upgrade>
         results.rows.forEach(row => {
             if (row.mechanic === "add") {
-                upgradesArray.push(new AdderUpgrade(row.strength, row.price, shelter, row.descriptor))
+                upgradesArray.push(new AdderUpgrade(row.mechanic, row.name, row.strength, row.price, shelter, row.descriptor))
             } else {
-                upgradesArray.push(new MultiplierUpgrade(row.strength, row.price, shelter, row.descriptor))
+                upgradesArray.push(new MultiplierUpgrade(row.mechanic, row.name, row.strength, row.price, shelter, row.descriptor))
             }
         });
         return upgradesArray;
@@ -211,6 +212,7 @@ export default class CatShelter {
      */
     static async getBuildingInventory(shelter: CatShelter) : Promise<Array<Building>> {
         let results = await db().query<{ 
+            name: string 
             mechanic: string;
             price: number;
             descriptor: string;
@@ -220,9 +222,9 @@ export default class CatShelter {
         let buildingsArray = new Array<Building>
         results.rows.forEach(row => {
             if (row.mechanic === "luxurious") {
-                buildingsArray.push(new LuxuriousTrap(shelter, row.price, row.strength, row.descriptor))
+                buildingsArray.push(new LuxuriousTrap(row.mechanic, row.name, shelter, row.price, row.strength, row.descriptor))
             } else {
-                buildingsArray.push(new SecondhandTrap(shelter, row.price, row.strength, row.descriptor))
+                buildingsArray.push(new SecondhandTrap(row.mechanic, row.name, shelter, row.price, row.strength, row.descriptor))
             }
         });
         return buildingsArray;

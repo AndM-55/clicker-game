@@ -8,17 +8,19 @@ import type Upgrade from "./upgrade";
 export default class MultiplierUpgrade {
     id?: number
     name: string
+    mechanic: string
     shelter: CatShelter;
     descriptor: string;
     #multiplier: number;
     price: number;
 
-    constructor(multiplier: number, price: number, shelter: CatShelter, descriptor: string) {
+    constructor(mechanic: string, name: string, multiplier: number, price: number, shelter: CatShelter, descriptor: string) {
         this.shelter = shelter;
         this.#multiplier = multiplier;
         this.price = price;
+        this.mechanic = mechanic
         this.descriptor = descriptor;
-        this.name = "Multiplier Upgrade"
+        this.name = name
         if (this.#multiplier <= 1) {
             throw new InvalidMultiplierExeption();
         }
@@ -52,7 +54,7 @@ export default class MultiplierUpgrade {
     * @returns the deep copy 
     */
     copy(u: Upgrade): MultiplierUpgrade {
-        let newUpgrade = new MultiplierUpgrade(u.power, u.price, u.shelter, u.descriptor)
+        let newUpgrade = new MultiplierUpgrade(u.mechanic, u.name, u.power, u.price, u.shelter, u.descriptor)
         return newUpgrade;
     }
 

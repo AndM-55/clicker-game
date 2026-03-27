@@ -25,7 +25,7 @@ test("getCatShelter correctly retrieves account error with empty database", () =
 test("Can add upgrade to shelter properly", () => {
     let s = new CatShelter("a", "b");
     s.cats = 400;
-    let u = new AdderUpgrade(10, 2, s, "hi");
+    let u = new AdderUpgrade("f", "f", 10, 2, s, "hi");
 
     s.purchaseUpgrade(u);
 
@@ -36,7 +36,7 @@ test("Can add upgrade to shelter properly", () => {
 test("Can add building to shelter properly", () => {
     let s = new CatShelter("a", "b");
     s.cats = 400;
-    let b = new LuxuriousTrap(s, 1, 2, "hi");
+    let b = new LuxuriousTrap("f", "f", s, 1, 2, "hi");
 
     s.purchaseBuilding(b);
 
@@ -47,7 +47,7 @@ test("Can add building to shelter properly", () => {
 test("Shelter notifies listeners", () => {
     let s = new CatShelter("a", "b");
     s.cats = 400;
-    let u = new AdderUpgrade(10, 2, s, "hi");
+    let u = new AdderUpgrade("f", "f", 10, 2, s, "hi");
 
     let notified = false;
 
@@ -61,8 +61,8 @@ test("Shelter notifies listeners", () => {
 test("Shelter clicks cats properly", () => {
     let s = new CatShelter("a", "b");
     s.cats = 400;
-    let u = new AdderUpgrade(10, 2, s, "hi");
-    let u2 = new MultiplierUpgrade(2, 2, s, "hi");
+    let u = new AdderUpgrade("f", "f", 10, 2, s, "hi");
+    let u2 = new MultiplierUpgrade("f", "f", 2, 2, s, "hi");
 
     s.purchaseUpgrade(u);
     s.purchaseUpgrade(u2);
