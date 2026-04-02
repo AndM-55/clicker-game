@@ -75,9 +75,11 @@ export default class CatShelter {
     autoBuy(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
         try {
             if (this.#currIndexPurchase < 5) {
-                this.purchaseUpgrade(upgradeInv[this.#currIndexPurchase])
+                let u = upgradeInv[this.#currIndexPurchase]
+                this.purchaseUpgrade(u.copy(u))
             } else {
-                this.purchaseBuilding(buildingInv[this.#currIndexPurchase - 5])
+                let b = buildingInv[this.#currIndexPurchase - 5]
+                this.purchaseBuilding(b.copy(b))
             }
             this.#nextSymbol()
         } catch (e: any) {
@@ -102,7 +104,7 @@ export default class CatShelter {
             fraction = sum/this.#denominator![i]
             console.log(fraction)
         }
-        
+
         this.#currIndexPurchase = j;
     }
 

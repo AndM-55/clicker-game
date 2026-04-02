@@ -41,7 +41,12 @@ export default class CatShelterView {
                 <h1>Welcome, ${this.#catShelter.username}</h1>
                 <ul id=purchase-buttons></ul>
                 <button id="click-cat">Click To Adopt Cats!</button>
-                <button id="auto-buy">Toggle Auto Buy</button>
+                <div class="control-group">
+                    <button id="auto-buy">Toggle Auto Buy</button>
+                        <span id="auto-buy-status">
+                            ${this.#autoBuyActive ? "ON" : "OFF"}
+                        </span>
+                </div>
                 <p>${this.#catShelter.cats + " cats"}</p>
                 <h3>Your Upgrades</h3>
                 <ul id="upgrade-list"></ul>
@@ -156,6 +161,9 @@ export default class CatShelterView {
      * it is called by its corresponding domain model instance
      */
     notify() {
+
+        (document.querySelector("#auto-buy-status") as HTMLElement).innerText = 
+        this.#autoBuyActive ? "ON" : "OFF";
 
         this.#upgradesEl.replaceChildren(); //discard all current list elements
         this.#catsElement.replaceChildren(); //discard the current displayed number of cats
