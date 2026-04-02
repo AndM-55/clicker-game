@@ -8,6 +8,7 @@ import AdderUpgrade from "./adderupgrade";
 import LuxuriousTrap from "./luxurious-trap";
 import MultiplierUpgrade from "./multiplierupgrade";
 import SecondhandTrap from "./secondhand-trap";
+import seedrandom from 'seedrandom'
 /**
  * The Cat shelter account that serves as the entire state of the game 
  */
@@ -18,6 +19,10 @@ export default class CatShelter {
     #upgrades: Array<Upgrade>;
     #buildings: Array<Building>;
     #listeners: Array<Listener>;
+    #numerator?: number[][];
+    #denominator?: number[];
+    #currIndexPurchase: number;
+    #myRandom: any;
 
     #checkCatShelter() {
         assert(this.#cats >= 0, "Number of cats owned must be greater than or equal to zero");
@@ -34,7 +39,89 @@ export default class CatShelter {
         this.#upgrades = new Array<Upgrade>;
         this.#buildings = new Array<Building>;
         this.#listeners = new Array<Listener>;
+        this.#currIndexPurchase = -1; // initially
+        this.#myRandom = seedrandom("click")
+        this.#getTrainingData()
         this.#checkCatShelter();
+    }
+
+    initializeChain(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
+        let item
+        if (this.#buildings.length > 0) {
+            item = this.#buildings[0];
+        } else if (this.#upgrades.length > 0) {
+            item = this.#upgrades[0];
+        } else {
+            throw new Error();
+        }
+        if (item instanceof AdderUpgrade || item instanceof MultiplierUpgrade) {
+            for (let i = 0; i < upgradeInv.length; i++) {
+                if (upgradeInv[i].name == item!.name) {
+                    this.#currIndexPurchase = i;
+                    console.log("set the index to " + i)
+                }
+            }
+        } else {
+            for (let i = 0; i < buildingInv.length; i++) {
+                if (buildingInv[i].name == item!.name) {
+                    this.#currIndexPurchase = i + 5
+                    console.log("set the index to " + (i+5))
+                }
+            }
+        }
+        
+    }
+
+    autoBuy(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
+        try {
+            if (this.#currIndexPurchase < 5) {
+                this.purchaseUpgrade(upgradeInv[this.#currIndexPurchase])
+            } else {
+                this.purchaseBuilding(buildingInv[this.#currIndexPurchase - 5])
+            }
+            this.#nextSymbol()
+        } catch (e: any) {
+            if (e instanceof InsufficientFundsError) {
+            } else {
+                console.log("unexpected error happened while attempting autoBuy in CatShelter")
+            }
+        }
+        
+    }
+
+    #nextSymbol() {
+        let rand: number = this.#myRandom();
+        let sum: number = 0
+        let i = this.#currIndexPurchase;
+        let j = -1
+        let fraction = 0
+        while (fraction < rand){
+            j++
+            
+            sum = (sum + this.#numerator![i][j]) 
+            fraction = sum/this.#denominator![i]
+            console.log(fraction)
+        }
+        
+        this.#currIndexPurchase = j;
+    }
+
+    async #getTrainingData() {
+        interface TrainingData {
+            numerator: number[][];
+            denominator: number[];
+        }
+
+        const inputFilePath: string = '/output.json';
+
+        try {
+            let response = await fetch(inputFilePath);
+            let jsonData: TrainingData = await response.json();
+            this.#numerator = jsonData.numerator
+            this.#denominator = jsonData.denominator
+        } catch (e: any) {
+            console.log("unexpected error while getting training data in cat shelter instance")
+        }
     }
 
     /**
@@ -44,7 +131,7 @@ export default class CatShelter {
      * @param pass Password provided by user for a new account
      * @returns Promise of type {@link CatShelter}
      */
-    static async create(user: string, pass: string): Promise<CatShelter>{
+    static async create(user: string, pass: string): Promise<CatShelter> {
         if (user.length < 1) {
             throw new InvalidAccountNameException();
         }
@@ -59,7 +146,7 @@ export default class CatShelter {
         } catch (e: any) {
             throw e;
         }
-        
+
         return shelter  // calls the constructor before returning 
     }
 
@@ -70,7 +157,7 @@ export default class CatShelter {
      * @param keyMaterial Plaintext provided by user
      * @returns a hashed password
      */
-    static async encrypt(salt: string, keyMaterial: string) : Promise<string> {
+    static async encrypt(salt: string, keyMaterial: string): Promise<string> {
         let hashFunction = hash();
         return hashFunction.hash(salt, keyMaterial);
     }
@@ -84,11 +171,11 @@ export default class CatShelter {
     static async saveCatShelter(shelter: CatShelter): Promise<CatShelter> {
         try {
             await db().query<{ name: string }>("insert into cat_shelter(username, pass, cats) values($1, $2, $3) returning username",
-            [shelter.username, shelter.password, shelter.cats]);
+                [shelter.username, shelter.password, shelter.cats]);
         } catch (e: any) {
             throw new UsernameTakenEcxeption()
         }
-        
+
 
         return shelter;
     }
@@ -156,10 +243,10 @@ export default class CatShelter {
 
         if (results.rows.length === 0) {
             throw new IncorrectUsernameOrPasswordException();
-        } else { 
+        } else {
             let row = results.rows.at(0);
             let encryptPromise = await CatShelter.encrypt(row!.username, password);
-            
+
             if (encryptPromise !== row!.pass) {
                 throw new IncorrectUsernameOrPasswordException()
             } else {
@@ -184,8 +271,8 @@ export default class CatShelter {
      * @param shelter instance of {@link CatShelter} that we use to construct any {@link Upgrade} instances
      * @returns a promise of an array of upgrades from the database inventory
      */
-    static async getUpgradeInventory(shelter: CatShelter) : Promise<Array<Upgrade>> {
-        let results = await db().query<{ 
+    static async getUpgradeInventory(shelter: CatShelter): Promise<Array<Upgrade>> {
+        let results = await db().query<{
             name: string;
             mechanic: string;
             price: number;
@@ -210,9 +297,9 @@ export default class CatShelter {
      * @param shelter instance of {@link CatShelter} that we use to construct any {@link Building} instances
      * @returns a promise of an array of buildings from the database inventory
      */
-    static async getBuildingInventory(shelter: CatShelter) : Promise<Array<Building>> {
-        let results = await db().query<{ 
-            name: string 
+    static async getBuildingInventory(shelter: CatShelter): Promise<Array<Building>> {
+        let results = await db().query<{
+            name: string
             mechanic: string;
             price: number;
             descriptor: string;
@@ -332,6 +419,11 @@ export default class CatShelter {
     set cats(num: number) {
         this.#cats = num;
     }
+
+    get currIndexPurchase() {
+        return this.#currIndexPurchase
+    }
+
 }
 
 export class IncorrectUsernameOrPasswordException extends Error { }

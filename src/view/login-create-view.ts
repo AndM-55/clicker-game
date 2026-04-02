@@ -1,4 +1,4 @@
-import type CatShelterController from "../controller/catshelter-controller";
+import type { CatShelterController } from "../controller/catshelter-controller";
 import { IncorrectUsernameOrPasswordException, InvalidAccountNameException, InvalidPasswordException, UsernameTakenEcxeption } from "../model/catshelter";
 
 /**

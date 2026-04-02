@@ -1,4 +1,4 @@
-import type CatShelterController from "../controller/catshelter-controller";
+import type { CatShelterController } from "../controller/catshelter-controller";
 import AdderUpgrade from "../model/adderupgrade";
 import type Building from "../model/building";
 import type Upgrade from "../model/upgrade";
@@ -19,6 +19,8 @@ export default class CatShelterView {
     #catsElement: HTMLParagraphElement;
     #controller: CatShelterController;
     #descriptionDialog?: HTMLDialogElement;
+    #autoBuyActive: boolean;
+    #autoBuyIntervalId?: number;
 
     constructor(catShelter: CatShelter, controller: CatShelterController, upgradesInv: Array<Upgrade>, buildingsInv: Array<Building>) {
         this.#catShelter = catShelter;
@@ -26,6 +28,7 @@ export default class CatShelterView {
         this.#controller = controller;
         this.#buildingsInv = buildingsInv;
         this.#upgradesInv = upgradesInv;
+        this.#autoBuyActive = false;
         this.startAutoClick();
 
         /**
@@ -38,6 +41,7 @@ export default class CatShelterView {
                 <h1>Welcome, ${this.#catShelter.username}</h1>
                 <ul id=purchase-buttons></ul>
                 <button id="click-cat">Click To Adopt Cats!</button>
+                <button id="auto-buy">Toggle Auto Buy</button>
                 <p>${this.#catShelter.cats + " cats"}</p>
                 <h3>Your Upgrades</h3>
                 <ul id="upgrade-list"></ul>
@@ -113,6 +117,11 @@ export default class CatShelterView {
         // create the click-cat button 
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
+
+        document.querySelector("#auto-buy")!
+            .addEventListener("click", () => {
+                this.toggelAutoBuy();
+            })
     }
 
     // this method removes any purchasable's description popup from the view
@@ -128,6 +137,19 @@ export default class CatShelterView {
             this.#controller!.autoClick();
         }, 1000);
     }
+
+    toggelAutoBuy() {
+        if (!this.#autoBuyActive) {
+            this.#autoBuyIntervalId = setInterval(() => {
+                this.#controller.autoBuy();
+            }, 3000)
+            this.#autoBuyActive = true;
+        } else {
+            clearInterval(this.#autoBuyIntervalId)
+            this.#autoBuyActive = false;
+        }
+    }
+
 
     /**
      * this function updates the view of the entire catshelter 

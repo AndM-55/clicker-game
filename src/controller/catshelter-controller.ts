@@ -11,7 +11,7 @@ import type Building from "../model/building.ts";
 import LuxuriousTrap from "../model/luxurious-trap.ts";
 import AdderUpgrade from "../model/adderupgrade.ts";
 
-export default class CatShelterController {
+export class CatShelterController {
     #catShelter?: CatShelter;
     #failedPurchaseView?: failedPurchaseView;
     #createOrLoginView?: CreateShelterView;
@@ -106,7 +106,7 @@ export default class CatShelterController {
             this.#catShelter!.purchaseBuilding(newBuilding!);
         } catch (e: any) {
             if (e instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
-                this.#failedPurchaseView = new failedPurchaseView(this);
+                this.#failedPurchaseView = new failedPurchaseView(this, "insufficient funds. get more cats first");
             }
         }
     }
@@ -123,10 +123,23 @@ export default class CatShelterController {
             this.#catShelter!.purchaseUpgrade(newUpgrade!);
         } catch (error: any) {
             if (error instanceof InsufficientFundsError && this.#failedPurchaseView === undefined) {
-                this.#failedPurchaseView = new failedPurchaseView(this);
+                this.#failedPurchaseView = new failedPurchaseView(this, "insufficient funds. get more cats first");
             }
         }
 
+    }
+
+    autoBuy() {
+        if (this.#catShelter?.currIndexPurchase! < 0) {
+            try {
+                this.#catShelter?.initializeChain(this.#upgradeInv!, this.#buildingInv!)
+            } catch (e: any) {
+                //this is fine
+            }
+            
+        }
+        this.#catShelter?.autoBuy(this.#upgradeInv!, this.#buildingInv!)
+        
     }
 
 
