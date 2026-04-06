@@ -3,8 +3,12 @@ title: CatClicker2452
 author: Andrew Moulden (mouldena@myumanitoba.ca)
 date: Winter 2026
 ---
-## changes from phase 2 initial submission
+## notable things for phase 3 implementation
+* YOU MUST PUCHASE AT LEAST ONE THING FOR AUTO BUY TO FUNCTION, THIS IS INTENDED (in the future I would like to implement some UI feedback that makes this clear to the user)
+* when you create a new account, I have made it so you start with 10000 currency, so that hopefully you don't have to click so much to assess the program. you can get straight to buying 1 item then assessing auto-buy
+* within main, an instance of the training model is created, as well as a function that effectively allows this instance to be used as a singleton. the CatShelter class uses the training data singleton to do all the markov chain responsibilities. The 3 CatShelter classes that deal with the markov chain are: `autoBuy`, `initializeChain`, and `#nextSymbol` located below the constructor
 
+## changes from phase 2 initial submission 
 * catshelter-controller is now significantly shorter with only 2 purchase methods. one for the building interface, one for the Upgrade interface
 * cat-shelter-view has some responsibility for creating instances in that the buttons decide which inventory instances are going to be added to the account. It still doesn't call constructors.
 * autoclick is now a responsibility of the view class, but it still communicates with the model through the controller
@@ -17,11 +21,24 @@ CatClicker2452 is an idle clicker game inspired by cookie clicker, for COMP 2452
 * the user can click a button to adopt cats
 * the user can 'purchase' upgrades to increase the number of cats gained per click
 * the user can purchase buildings to auto click for them
+* once obtaining one purchasable, the user can activate auto buy to automatically buy more upgrades and buildings
 
 The program uses an MVC software architecture. 
 * All domain model ts files can be found in the 'model' folder
 * All controller ts files can be found in the 'controller' folder
 * All User Interface ts/html files can be found in the 'view' folder
+# Training 
+to train the model, I processed "training.csv" with "markovtraining/training.ts", located in the root of the project folder. to run training.ts, I used `npm`, `npx` and `tsx`:
+```bash
+npm install
+npx tsx markovtraining/test.ts
+```
+### output
+the output is stored in "output.json" which is located in the root of the project folder. The output folder has two json objects stored into it: 
+
+- the adjacency matrix where each entry of matrix[row][col] = the whole number of transitions from state(row) to sate(col) 
+- the denominator array that represents how many total 'outgoing' transitions each state has. i.e., the individual sums of each row of the adjacency matrix
+
 # Running
 This project is a Node.js project that uses Vite.
 You can start my app using `npm` and `npx`:
@@ -43,3 +60,4 @@ npx vitest run --coverage
 * You can find my domain model in `domain.md`.
 * You can find my flows of interaction in `flows.md`.
 * you can find my DDL in `create-tables.sql`
+* you can find my training output in `output.json`

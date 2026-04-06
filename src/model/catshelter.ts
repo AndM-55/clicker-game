@@ -9,6 +9,8 @@ import LuxuriousTrap from "./luxurious-trap";
 import MultiplierUpgrade from "./multiplierupgrade";
 import SecondhandTrap from "./secondhand-trap";
 import seedrandom from 'seedrandom'
+import td from "../main";
+
 /**
  * The Cat shelter account that serves as the entire state of the game 
  */
@@ -19,8 +21,6 @@ export default class CatShelter {
     #upgrades: Array<Upgrade>;
     #buildings: Array<Building>;
     #listeners: Array<Listener>;
-    #numerator?: number[][];
-    #denominator?: number[];
     #currIndexPurchase: number;
     #myRandom: any;
 
@@ -35,16 +35,22 @@ export default class CatShelter {
     constructor(user: string, pass: string) {
         this.#userName = user;
         this.#password = pass
-        this.#cats = 0;
+        this.#cats = 10000;
         this.#upgrades = new Array<Upgrade>;
         this.#buildings = new Array<Building>;
         this.#listeners = new Array<Listener>;
         this.#currIndexPurchase = -1; // initially
         this.#myRandom = seedrandom("click")
-        this.#getTrainingData()
         this.#checkCatShelter();
     }
 
+    /**
+     * this function initializes this account's auto buy by assigning {@link CatShelter.currIndexPurchase} 
+     * an index from the adjacency matrix, which will correspond to an item in one of the inventory arrays
+     * 
+     * @param upgradeInv the upgrade inventory. indices 0-4 represent rows 0-4 in the adjacency matrix respectively
+     * @param buildingInv the building inventory. indices 0-4 represent rows 5-9 in the adjacency matrix respectively
+     */
     initializeChain(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
         let item
         if (this.#buildings.length > 0) {
@@ -58,20 +64,24 @@ export default class CatShelter {
             for (let i = 0; i < upgradeInv.length; i++) {
                 if (upgradeInv[i].name == item!.name) {
                     this.#currIndexPurchase = i;
-                    console.log("set the index to " + i)
                 }
             }
         } else {
             for (let i = 0; i < buildingInv.length; i++) {
                 if (buildingInv[i].name == item!.name) {
-                    this.#currIndexPurchase = i + 5
-                    console.log("set the index to " + (i+5))
+                    this.#currIndexPurchase = i + 5 // +5 is how i 'assign' indices 0-4 with letters f-j
                 }
             }
         }
         
     }
 
+    /**
+     * this function purchases an item from the inventories using {@link CatShelter.currIndexPurchase} to decide which to buy
+     * 
+     * @param upgradeInv the upgrade inventory, indices 0-4 represent rows 0-4 in the adjacency matrix, respectively
+     * @param buildingInv the building inventory indices 0-4 represent rows 5-9 in the adjacency matrix, respectively
+     */
     autoBuy(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
         try {
             if (this.#currIndexPurchase < 5) {
@@ -83,7 +93,7 @@ export default class CatShelter {
             }
             this.#nextSymbol()
         } catch (e: any) {
-            if (e instanceof InsufficientFundsError) {
+            if (e instanceof InsufficientFundsError) { // its fine if we dont have enough money. just try again
             } else {
                 console.log("unexpected error happened while attempting autoBuy in CatShelter")
             }
@@ -91,6 +101,11 @@ export default class CatShelter {
         
     }
 
+    /**
+     * this function uses the trained model to randomly decide what the next {@link CatShelter.currIndexPurchase} will be.
+     * 
+     * i.e., it chooses the next item that will be auto purchased
+     */
     #nextSymbol() {
         let rand: number = this.#myRandom();
         let sum: number = 0
@@ -100,30 +115,11 @@ export default class CatShelter {
         while (fraction < rand){
             j++
             
-            sum = (sum + this.#numerator![i][j]) 
-            fraction = sum/this.#denominator![i]
-            console.log(fraction)
+            sum = (sum + td().numerator![i][j]) 
+            fraction = sum/td().denominator![i]
         }
 
         this.#currIndexPurchase = j;
-    }
-
-    async #getTrainingData() {
-        interface TrainingData {
-            numerator: number[][];
-            denominator: number[];
-        }
-
-        const inputFilePath: string = '/output.json';
-
-        try {
-            let response = await fetch(inputFilePath);
-            let jsonData: TrainingData = await response.json();
-            this.#numerator = jsonData.numerator
-            this.#denominator = jsonData.denominator
-        } catch (e: any) {
-            console.log("unexpected error while getting training data in cat shelter instance")
-        }
     }
 
     /**

@@ -9,7 +9,6 @@ import CreateOrLoginView from "../view/login-create-view.ts";
 import type Upgrade from "../model/upgrade.ts";
 import type Building from "../model/building.ts";
 import LuxuriousTrap from "../model/luxurious-trap.ts";
-import AdderUpgrade from "../model/adderupgrade.ts";
 
 export class CatShelterController {
     #catShelter?: CatShelter;
@@ -129,16 +128,22 @@ export class CatShelterController {
 
     }
 
+    /**
+     * this function attempts to auto purchase the current item that the account instance should auto purchase
+     * based on the trained model's decision
+     */
     autoBuy() {
-        if (this.#catShelter?.currIndexPurchase! < 0) {
+        if (this.#catShelter!.currIndexPurchase < 0) { 
             try {
-                this.#catShelter?.initializeChain(this.#upgradeInv!, this.#buildingInv!)
+                this.#catShelter!.initializeChain(this.#upgradeInv!, this.#buildingInv!)
+                this.#catShelter!.autoBuy(this.#upgradeInv!, this.#buildingInv!)
             } catch (e: any) {
-                //this is fine
+                // just silently deal with the error if the user tries autobuy before purchasing anything
             }
             
+        } else {
+            this.#catShelter!.autoBuy(this.#upgradeInv!, this.#buildingInv!)
         }
-        this.#catShelter?.autoBuy(this.#upgradeInv!, this.#buildingInv!)
         
     }
 

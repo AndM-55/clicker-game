@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs'
 
 const ASCIIA = "a";
 let denominator: number[] = []
@@ -16,7 +16,7 @@ const rows = fs.readFileSync('training.csv', {
     encoding: 'utf-8'
 }).split('\n')
 
-rows.forEach(row => {
+rows.forEach((row: string) => {
     const tokens = row.split(',');
     for (let i = 0; i < tokens.length - 1; i++) {
         let init = (tokens[i].charCodeAt(0)) - (ASCIIA.charCodeAt(0));

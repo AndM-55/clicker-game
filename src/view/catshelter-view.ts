@@ -123,6 +123,7 @@ export default class CatShelterView {
         document.querySelector("#click-cat")!
             .addEventListener("click", () => this.#controller.clickCat());
 
+        // create auto-buy toggle button
         document.querySelector("#auto-buy")!
             .addEventListener("click", () => {
                 this.toggelAutoBuy();
@@ -143,6 +144,9 @@ export default class CatShelterView {
         }, 1000);
     }
 
+    /**
+     * this function toggles a set interval for {@link CatShelterController.autoBuy}
+     */
     toggelAutoBuy() {
         if (!this.#autoBuyActive) {
             this.#autoBuyIntervalId = setInterval(() => {
