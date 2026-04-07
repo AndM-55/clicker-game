@@ -1,16 +1,8 @@
 import fs from 'fs'
 
 const ASCIIA = "a";
-let denominator: number[] = []
-let numerator: number[][] = []
-
-for (let i = 0; i < 10; i++) {
-    numerator[i] = [];
-    denominator[i] = 0
-    for (let j = 0; j < 10; j++) {
-        numerator[i][j] = 0
-    }
-}
+let denominator: number[] = Array(10).fill(0);
+let numerator: number[][] = Array.from({length: 10}, () => Array(10).fill(0))
 
 const rows = fs.readFileSync('training.csv', {
     encoding: 'utf-8'
@@ -26,14 +18,24 @@ rows.forEach((row: string) => {
     }
 })
 
-const outputFilePath: string = 'output.json';
+let rawProbabilitiesString = "";
 
-const object = {
-    numerator,
-    denominator
-};
+for (let i = 0; i < numerator.length; i++) {
+    let currString = ""
+    for (let j = 0; j < numerator[0].length; j++) {
+        numerator[i][j] = numerator[i][j] / denominator[i]
+        currString += numerator[i][j] 
+        if (j != numerator[0].length - 1){
+            currString += ","
+        }
+    }
+    rawProbabilitiesString += currString + "\n"
+}
 
-fs.writeFile(outputFilePath, JSON.stringify(object, null, 2), 'utf8', () => {
-  console.log(`numerator table written to ${outputFilePath} as JSON.`);
+const outputFilePath: string = 'output.csv';
+
+
+fs.writeFile(outputFilePath, rawProbabilitiesString, 'utf8', () => {
+  console.log(`numerator table written to ${outputFilePath} as csv.`);
 });
 

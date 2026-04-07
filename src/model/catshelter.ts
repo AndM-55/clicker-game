@@ -8,7 +8,7 @@ import AdderUpgrade from "./adderupgrade";
 import LuxuriousTrap from "./luxurious-trap";
 import MultiplierUpgrade from "./multiplierupgrade";
 import SecondhandTrap from "./secondhand-trap";
-import seedrandom from 'seedrandom'
+import { rng } from "../main";
 import td from "../main";
 
 /**
@@ -22,7 +22,7 @@ export default class CatShelter {
     #buildings: Array<Building>;
     #listeners: Array<Listener>;
     #currIndexPurchase: number;
-    #myRandom: any;
+
 
     #checkCatShelter() {
         assert(this.#cats >= 0, "Number of cats owned must be greater than or equal to zero");
@@ -35,12 +35,11 @@ export default class CatShelter {
     constructor(user: string, pass: string) {
         this.#userName = user;
         this.#password = pass
-        this.#cats = 10000;
+        this.#cats = 500;
         this.#upgrades = new Array<Upgrade>;
         this.#buildings = new Array<Building>;
         this.#listeners = new Array<Listener>;
         this.#currIndexPurchase = -1; // initially
-        this.#myRandom = seedrandom("click")
         this.#checkCatShelter();
     }
 
@@ -84,6 +83,9 @@ export default class CatShelter {
      */
     autoBuy(upgradeInv: Array<Upgrade>, buildingInv: Array<Building>) {
         try {
+            if (this.#currIndexPurchase < 0) {
+                this.initializeChain(upgradeInv, buildingInv);
+            }
             if (this.#currIndexPurchase < 5) {
                 let u = upgradeInv[this.#currIndexPurchase]
                 this.purchaseUpgrade(u.copy(u))
@@ -93,10 +95,7 @@ export default class CatShelter {
             }
             this.#nextSymbol()
         } catch (e: any) {
-            if (e instanceof InsufficientFundsError) { // its fine if we dont have enough money. just try again
-            } else {
-                console.log("unexpected error happened while attempting autoBuy in CatShelter")
-            }
+            // if something didn't work, it will have been a valid error. don't do anything
         }
         
     }
@@ -107,16 +106,15 @@ export default class CatShelter {
      * i.e., it chooses the next item that will be auto purchased
      */
     #nextSymbol() {
-        let rand: number = this.#myRandom();
-        let sum: number = 0
+
+        let rand: number = rng();
         let i = this.#currIndexPurchase;
         let j = -1
         let fraction = 0
         while (fraction < rand){
             j++
             
-            sum = (sum + td().numerator![i][j]) 
-            fraction = sum/td().denominator![i]
+            fraction += td()[i][j]
         }
 
         this.#currIndexPurchase = j;
@@ -416,10 +414,6 @@ export default class CatShelter {
 
     set cats(num: number) {
         this.#cats = num;
-    }
-
-    get currIndexPurchase() {
-        return this.#currIndexPurchase
     }
 
 }

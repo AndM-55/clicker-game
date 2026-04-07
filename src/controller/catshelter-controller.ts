@@ -133,18 +133,9 @@ export class CatShelterController {
      * based on the trained model's decision
      */
     autoBuy() {
-        if (this.#catShelter!.currIndexPurchase < 0) { 
-            try {
-                this.#catShelter!.initializeChain(this.#upgradeInv!, this.#buildingInv!)
-                this.#catShelter!.autoBuy(this.#upgradeInv!, this.#buildingInv!)
-            } catch (e: any) {
-                // just silently deal with the error if the user tries autobuy before purchasing anything
-            }
-            
-        } else {
+        try {
             this.#catShelter!.autoBuy(this.#upgradeInv!, this.#buildingInv!)
-        }
-        
+        } catch (e: any) {}
     }
 
 
