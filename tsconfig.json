@@ -24,7 +24,7 @@
   },
 
   "include": ["src"],
-  // "references": [
-  //   { "path": "markovtraining" }
-  // ]
+  "references": [
+    { "path": "markovtraining" }
+  ]
 }

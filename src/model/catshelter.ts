@@ -97,7 +97,7 @@ export default class CatShelter {
         } catch (e: any) {
             // if something didn't work, it will have been a valid error. don't do anything
         }
-        
+        console.log("comment")
     }
 
     /**

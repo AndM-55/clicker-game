@@ -9,8 +9,8 @@ db().exec(ddl);
 
 const rows = csvString.split("\n")
 
+// initialize a matrix and fill it with the raw probabilities for all transitions
 const matrix: number[][] = Array.from({ length: 10 }, () => Array(10).fill(0))
-
 let currRow = 0
 rows.forEach((row) => {
     let tokens = row.split(",")
@@ -25,13 +25,14 @@ rows.forEach((row) => {
 
 })
 
+// function to give the domain model access to the matrix
 export default function td() {
     return matrix
 }
 
 
 /**
- * an instance of seedrandom, and a method to get it's next random number
+ * an instance of seedrandom, and a method to let the domain model access the seedrandom
  */
 const rand = seedrandom("click")
 

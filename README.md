@@ -6,7 +6,9 @@ date: Winter 2026
 ## notable things for phase 3 implementation
 * YOU MUST PUCHASE AT LEAST ONE THING FOR AUTO BUY TO FUNCTION, THIS IS INTENDED (in the future I would like to implement some UI feedback that makes this clear to the user)
 * when you create a new account, I have made it so you start with 500 currency, so that you don't have to click so much to assess the program. you can get straight to buying 1 item then assessing auto-buy
-* within main, an instance of the training model is created, as well as a function that effectively allows this instance to be used as a singleton. the CatShelter class uses the training data singleton to do all the markov chain responsibilities. The 3 CatShelter classes that deal with the markov chain are: `autoBuy`, `initializeChain`, and `#nextSymbol` located below the constructor
+* within main, an instance of the trained model is created, as well as a function that effectively allows this instance to be used as a singleton. the CatShelter class uses the singleton to do all the markov chain responsibilities. The 3 CatShelter classes that deal with the markov chain are: `autoBuy`, `initializeChain`, and `#nextSymbol` located below the constructor
+* To run tsx there is either an install command you need to run, or it will auto prompt you to install it. either way, the below instructions under the 'training' header worked for me when using npx tsx
+* If for some reason you run vitest, beware; I had to set the vitest config environment to happy-dom, because apparently vitest changed some settings that required me to make that change. So you may have to run another install command for happy-dom to work, but I'm not quite sure
 
 ## changes from phase 2 initial submission 
 * catshelter-controller is now significantly shorter with only 2 purchase methods. one for the building interface, one for the Upgrade interface
