@@ -1,6 +1,6 @@
 ---
 title: CatClicker2452
-author: Andrew Moulden (mouldena@myumanitoba.ca)
+author: Andrew Moulden
 date: Winter 2026
 ---
 ## notable things for phase 3 implementation
